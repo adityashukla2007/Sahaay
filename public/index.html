@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#08090b">
+    <title>Sahaay | Advanced Women Emergency Response Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="strobeOverlay" class="strobe-screen hidden"></div>
+
+    <!-- AUTHENTICATION MODAL -->
+    <div id="authContainer" class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-brand">
+                <div class="brand-crest">🛡️</div>
+                <h2>Sahaay<span>.</span></h2>
+                <p>Personal Emergency Response & Guardian System</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" placeholder="e.g. ananya" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-submit">Secure Log In</button>
+                <p class="auth-toggle">Don't have an account? <a href="#" id="showRegisterLink">Register</a></p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form hidden">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="e.g. Ananya Sharma" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="regUsername" placeholder="ananya" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="regPassword" placeholder="••••••••" required autocomplete="new-password">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" id="regAge" placeholder="21" min="10" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Profession</label>
+                        <input type="text" id="regProfession" placeholder="Student / IT Engineer">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Create Safety Profile</button>
+                <p class="auth-toggle">Already have an account? <a href="#" id="showLoginLink">Log In</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="dashboardContainer" class="dashboard-wrapper hidden">
+        <!-- Top Navigation -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo-box">🛡️</div>
+                <div>
+                    <h1>Sahaay<span class="dot">.</span></h1>
+                    <p class="user-greeting">Protected: <span id="navUserName">User</span></p>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" id="decoyToggleBtn" title="Camouflage into Calculator">🧮 Decoy</button>
+                <button class="icon-btn btn-logout" id="logoutBtn" title="Log Out">Log Out</button>
+            </div>
+        </header>
+
+        <!-- Main Responsive Grid -->
+        <main class="dashboard-grid">
+            <!-- Left Column: Core Beacon -->
+            <section class="grid-col main-col">
+                <!-- Live Telemetry Card -->
+                <div class="cyber-card gps-banner">
+                    <div class="gps-flex">
+                        <div class="pulse-radar">
+                            <span class="radar-dot" id="gpsRadarDot"></span>
+                        </div>
+                        <div class="gps-info">
+                            <h3 id="gpsStatusHeader">Calibrating Satellite Lock...</h3>
+                            <p class="mono-text" id="gpsCoordinates">Lat: --.---- | Long: --.----</p>
+                        </div>
+                    </div>
+                    <div class="gps-actions">
+                        <button class="pill-btn" id="shareLiveMapBtn">📍 Share Map Link</button>
+                        <button class="pill-btn" id="refreshGpsBtn">🔄 Recalibrate</button>
+                    </div>
+                </div>
+
+                <!-- SOS Primary Beacon -->
+                <div class="cyber-card sos-center-box">
+                    <div class="sos-ring">
+                        <button class="sos-core-btn" id="sosTriggerBtn">
+                            <span class="sos-glow"></span>
+                            <span class="sos-label">SOS</span>
+                            <span class="sos-sublabel">HOLD / TAP TO ALERT</span>
+                        </button>
+                    </div>
+                    <p class="sos-disclaimer">One tap alerts saved guardians via SMS, WhatsApp, and registers with backend dispatch.</p>
+                </div>
+
+                <!-- Fast Deterrent Action Grid -->
+                <div class="action-grid">
+                    <button class="action-tile tile-red" id="sirenBtn">
+                        <span class="tile-icon">🚨</span>
+                        <div class="tile-texts">
+                            <strong>Acoustic Siren</strong>
+                            <small>Dual High-Decibel Tone</small>
+                        </div>
+                    </button>
+
+                    <button class="action-tile tile-orange" id="strobeBtn">
+                        <span class="tile-icon">⚡</span>
+                        <div class="tile-texts">
+                            <strong>Disorient Strobe</strong>
+                            <small>Visual Flashing Light</small>
+                        </div>
+                    </button>
+
+                    <button class="action-tile tile-slate" id="fakeCallBtn">
+                        <span class="tile-icon">📞</span>
+                        <div class="tile-texts">
+                            <strong>Fake Incoming Call</strong>
+                            <small>Ring in 10 Seconds</small>
+                        </div>
+                    </button>
+
+                    <button class="action-tile tile-slate" id="audioRecorderBtn">
+                        <span class="tile-icon">🎙️</span>
+                        <div class="tile-texts">
+                            <strong>Record Evidence</strong>
+                            <small id="recordStatusLabel">Secret Microphone Log</small>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Audio Evidence Log Section -->
+                <div class="cyber-card hidden" id="audioLogCard">
+                    <h3 class="card-heading">Captured Audio Evidence</h3>
+                    <div id="audioPlaybackBox"></div>
+                </div>
+            </section>
+
+            <!-- Right Column: Guardians & Helplines -->
+            <section class="grid-col side-col">
+                <!-- User Profile Card -->
+                <div class="cyber-card profile-card">
+                    <h3 class="card-heading">Active Identity</h3>
+                    <div class="profile-meta">
+                        <div>
+                            <span class="meta-label">Full Name:</span>
+                            <span class="meta-val" id="profileFullName">--</span>
+                        </div>
+                        <div>
+                            <span class="meta-label">Profession:</span>
+                            <span class="meta-val" id="profileProfession">--</span>
+                        </div>
+                        <div>
+                            <span class="meta-label">Age:</span>
+                            <span class="meta-val" id="profileAge">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Saved Guardian Management -->
+                <div class="cyber-card">
+                    <h3 class="card-heading">Saved Emergency Guardians</h3>
+                    <p class="card-sub">Direct one-tap calling & rapid dispatch target.</p>
+                    
+                    <div class="input-inline">
+                        <input type="tel" id="newContactInput" placeholder="Enter 10-digit phone number" maxlength="10">
+                        <button class="btn-accent" id="saveContactBtn">Add</button>
+                    </div>
+
+                    <div class="contacts-scroll-area">
+                        <ul class="guardian-list" id="guardianList">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Government Emergency Lines -->
+                <div class="cyber-card">
+                    <h3 class="card-heading">Instant Direct Helplines</h3>
+                    <div class="helpline-table">
+                        <a href="tel:112" class="hl-item hl-112">
+                            <strong>112</strong>
+                            <span>National Emergency</span>
+                        </a>
+                        <a href="tel:1091" class="hl-item hl-1091">
+                            <strong>1091</strong>
+                            <span>Women Distress</span>
+                        </a>
+                        <a href="tel:181" class="hl-item hl-181">
+                            <strong>181</strong>
+                            <span>Domestic Violence</span>
+                        </a>
+                        <a href="tel:1930" class="hl-item hl-1930">
+                            <strong>1930</strong>
+                            <span>Cyber Harassment</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- FAKE CALL MODAL OVERLAY -->
+    <div id="fakeCallModal" class="fake-call-container hidden">
+        <div class="call-dialog">
+            <div class="avatar-ring">
+                <span class="caller-avatar">👤</span>
+            </div>
+            <h2 class="caller-title">Papa (Mobile)</h2>
+            <p class="calling-state" id="fakeCallStateText">Incoming Call...</p>
+            <div class="call-actions-row">
+                <button class="call-action-btn reject-call" id="declineCallBtn">✕</button>
+                <button class="call-action-btn accept-call" id="acceptCallBtn">📞</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DECOY CALCULATOR OVERLAY -->
+    <div id="decoyCalcModal" class="calc-container hidden">
+        <div class="calc-panel">
+            <div class="calc-display" id="calcDisplay">0</div>
+            <div class="calc-keys">
+                <button class="calc-btn op" onclick="calcOp('C')">AC</button>
+                <button class="calc-btn op" onclick="calcOp('/')">÷</button>
+                <button class="calc-btn op" onclick="calcOp('*')">×</button>
+                <button class="calc-btn op" onclick="calcOp('-')">−</button>
+                
+                <button class="calc-btn" onclick="calcDigit('7')">7</button>
+                <button class="calc-btn" onclick="calcDigit('8')">8</button>
+                <button class="calc-btn" onclick="calcDigit('9')">9</button>
+                <button class="calc-btn op" onclick="calcOp('+')">+</button>
+                
+                <button class="calc-btn" onclick="calcDigit('4')">4</button>
+                <button class="calc-btn" onclick="calcDigit('5')">5</button>
+                <button class="calc-btn" onclick="calcDigit('6')">6</button>
+                <button class="calc-btn exit-key" onclick="exitDecoy()">EXIT</button>
+                
+                <button class="calc-btn" onclick="calcDigit('1')">1</button>
+                <button class="calc-btn" onclick="calcDigit('2')">2</button>
+                <button class="calc-btn" onclick="calcDigit('3')">3</button>
+                <button class="calc-btn eq-key" onclick="calcEvaluate()">=</button>
+                
+                <button class="calc-btn zero-key" onclick="calcDigit('0')">0</button>
+                <button class="calc-btn" onclick="calcDigit('.')">.</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
