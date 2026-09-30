@@ -1,21 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sahaay | Advanced Women Safety Portal</title>
+    <meta name="theme-color" content="#05070a">
+    <title>Sahaay | Women Emergency Response & Safety Companion</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* RESET & BASE */
-        *,
-        *::before,
-        *::after {
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -29,19 +24,133 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 16px 12px;
+            padding: 14px;
             overflow-x: hidden;
         }
 
+        .hidden { display: none !important; }
+
+        /* AUTHENTICATION VIEW */
+        .auth-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at top, #141a26 0%, #05070a 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            z-index: 9999;
+        }
+
+        .auth-card {
+            background: #0d121c;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 32px 26px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+        }
+
+        .auth-brand {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .auth-shield {
+            font-size: 3rem;
+            filter: drop-shadow(0 0 14px rgba(255, 51, 75, 0.45));
+            margin-bottom: 8px;
+        }
+
+        .auth-brand h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .auth-brand h2 span { color: #ff334b; }
+
+        .auth-brand p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+        }
+
+        .form-group input {
+            background: #06080d;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus { border-color: #38bdf8; }
+
+        .btn-auth {
+            background: linear-gradient(135deg, #ff334b, #bd0a20);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 6px;
+            box-shadow: 0 4px 20px rgba(255, 51, 75, 0.35);
+        }
+
+        .auth-switch {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 12px;
+        }
+
+        .auth-switch a {
+            color: #38bdf8;
+            text-decoration: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* MAIN DASHBOARD */
         .dashboard-wrapper {
             width: 100%;
-            max-width: 1020px;
+            max-width: 1050px;
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        /* HEADER */
         .app-header {
             display: flex;
             justify-content: space-between;
@@ -56,9 +165,9 @@
             gap: 12px;
         }
 
-        .logo-shield {
+        .header-shield {
             font-size: 2.2rem;
-            filter: drop-shadow(0 0 12px rgba(255, 51, 75, 0.4));
+            filter: drop-shadow(0 0 10px rgba(255, 51, 75, 0.4));
         }
 
         .header-brand h1 {
@@ -67,18 +176,16 @@
             letter-spacing: -0.5px;
         }
 
-        .header-brand h1 span {
-            color: #ff334b;
-        }
+        .header-brand h1 span { color: #ff334b; }
 
-        .user-badge {
-            font-size: 0.8rem;
+        .user-pill {
+            font-size: 0.82rem;
             color: #94a3b8;
-            margin-top: 2px;
         }
 
-        .user-badge strong {
+        .user-pill strong {
             color: #10b981;
+            font-weight: 700;
         }
 
         .header-actions {
@@ -86,10 +193,10 @@
             gap: 10px;
         }
 
-        .nav-btn {
-            background: #121722;
+        .header-btn {
+            background: #111622;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #e2e8f0;
+            color: #f1f5f9;
             padding: 8px 14px;
             border-radius: 8px;
             font-size: 0.82rem;
@@ -98,16 +205,10 @@
             transition: all 0.2s;
         }
 
-        .nav-btn:hover {
-            background: #1c2436;
-            border-color: rgba(255, 255, 255, 0.2);
-        }
+        .header-btn:hover { background: #1c2436; }
+        .btn-signout { color: #ff334b; }
 
-        .btn-logout {
-            color: #ff334b;
-        }
-
-        /* LAYOUT GRID */
+        /* RESPONSIVE LAYOUT */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1.25fr 1fr;
@@ -115,10 +216,8 @@
             align-items: start;
         }
 
-        @media (max-width: 820px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 840px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
         }
 
         .grid-col {
@@ -127,16 +226,15 @@
             gap: 18px;
         }
 
-        /* CARD CONTAINERS */
-        .glass-card {
-            background: #0d111a;
+        .cyber-card {
+            background: #0d121c;
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 18px;
             padding: 22px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .card-title {
+        .card-heading {
             font-size: 1.05rem;
             font-weight: 700;
             color: #ffffff;
@@ -149,17 +247,12 @@
             margin-bottom: 14px;
         }
 
-        /* GPS BANNER */
-        .gps-card {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .gps-row {
+        /* GPS RADAR */
+        .gps-flex {
             display: flex;
             align-items: center;
             gap: 14px;
+            margin-bottom: 14px;
         }
 
         .radar-box {
@@ -179,27 +272,16 @@
             border-radius: 50%;
             background: #10b981;
             box-shadow: 0 0 14px #10b981;
-            animation: pulse-ring 2s infinite ease-out;
+            animation: radar-pulse 2s infinite ease-out;
         }
 
-        @keyframes pulse-ring {
-            0% {
-                transform: scale(0.9);
-                opacity: 1;
-            }
-
-            50% {
-                transform: scale(1.3);
-                opacity: 0.5;
-            }
-
-            100% {
-                transform: scale(0.9);
-                opacity: 1;
-            }
+        @keyframes radar-pulse {
+            0% { transform: scale(0.9); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.5; }
+            100% { transform: scale(0.9); opacity: 1; }
         }
 
-        .gps-meta h3 {
+        .gps-info h3 {
             font-size: 0.95rem;
             font-weight: 700;
             color: #f8fafc;
@@ -209,10 +291,10 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.82rem;
             color: #38bdf8;
-            margin-top: 3px;
+            margin-top: 2px;
         }
 
-        .gps-buttons {
+        .gps-actions {
             display: flex;
             gap: 10px;
         }
@@ -229,12 +311,10 @@
             transition: all 0.2s;
         }
 
-        .pill-btn:hover {
-            background: #20293a;
-        }
+        .pill-btn:hover { background: #20293a; }
 
-        /* SOS CORE BUTTON */
-        .sos-wrapper {
+        /* SOS CORE */
+        .sos-container {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -242,7 +322,7 @@
             text-align: center;
         }
 
-        .sos-anchor {
+        .sos-btn {
             width: 195px;
             height: 195px;
             border-radius: 50%;
@@ -258,12 +338,12 @@
             transition: transform 0.15s ease, box-shadow 0.2s ease;
         }
 
-        .sos-anchor:active {
+        .sos-btn:active {
             transform: scale(0.93);
             box-shadow: 0 0 15px rgba(255, 51, 75, 0.8);
         }
 
-        .sos-text {
+        .sos-main-txt {
             font-size: 3.2rem;
             font-weight: 800;
             color: #ffffff;
@@ -271,7 +351,7 @@
             line-height: 1;
         }
 
-        .sos-subtext {
+        .sos-sub-txt {
             font-size: 0.65rem;
             font-weight: 700;
             color: #ffe4e6;
@@ -279,15 +359,15 @@
             margin-top: 6px;
         }
 
-        .sos-note {
+        .sos-info-note {
             font-size: 0.8rem;
             color: #94a3b8;
             margin-top: 18px;
-            max-width: 360px;
+            max-width: 380px;
             line-height: 1.4;
         }
 
-        /* 4 QUICK ACTION TILES */
+        /* 4 ACTION TILES */
         .action-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -295,7 +375,7 @@
         }
 
         .action-tile {
-            background: #11151f;
+            background: #101520;
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 14px;
             padding: 16px 14px;
@@ -312,43 +392,38 @@
             border-color: rgba(255, 255, 255, 0.18);
         }
 
-        .tile-icon {
-            font-size: 1.8rem;
-        }
+        .tile-emoji { font-size: 1.8rem; }
 
-        .tile-info strong {
+        .tile-body strong {
             display: block;
             font-size: 0.88rem;
             font-weight: 700;
             color: #ffffff;
         }
 
-        .tile-info small {
+        .tile-body small {
             font-size: 0.72rem;
             color: #94a3b8;
         }
 
-        .border-red {
-            border-left: 4px solid #ff334b;
+        .tile-active {
+            border-color: #10b981 !important;
+            background: rgba(16, 185, 129, 0.12) !important;
         }
 
-        .border-amber {
-            border-left: 4px solid #f59e0b;
-        }
-
-        .border-blue {
-            border-left: 4px solid #38bdf8;
-        }
+        .border-red { border-left: 4px solid #ff334b; }
+        .border-amber { border-left: 4px solid #f59e0b; }
+        .border-blue { border-left: 4px solid #38bdf8; }
 
         /* USER IDENTITY CARD */
-        .profile-list {
+        .identity-table {
             display: flex;
             flex-direction: column;
             gap: 10px;
             margin-top: 8px;
         }
 
-        .profile-item {
+        .id-row {
             display: flex;
             justify-content: space-between;
             font-size: 0.86rem;
@@ -356,25 +431,19 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .profile-item span {
-            color: #94a3b8;
-        }
+        .id-row span { color: #94a3b8; }
+        .id-row strong { color: #f8fafc; font-weight: 600; }
 
-        .profile-item strong {
-            color: #f8fafc;
-            font-weight: 600;
-        }
-
-        /* GUARDIAN SECTION */
-        .contact-row {
+        /* GUARDIANS */
+        .contact-input-row {
             display: flex;
             gap: 8px;
             margin-bottom: 12px;
         }
 
-        .contact-row input {
+        .contact-input-row input {
             flex: 1;
-            background: #080a0f;
+            background: #06080d;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             color: #ffffff;
@@ -383,11 +452,9 @@
             outline: none;
         }
 
-        .contact-row input:focus {
-            border-color: #38bdf8;
-        }
+        .contact-input-row input:focus { border-color: #38bdf8; }
 
-        .btn-add {
+        .btn-add-contact {
             background: #2563eb;
             color: white;
             border: none;
@@ -427,7 +494,7 @@
             gap: 8px;
         }
 
-        .call-guardian-btn {
+        .call-btn-link {
             background: rgba(16, 185, 129, 0.15);
             color: #10b981;
             border: 1px solid rgba(16, 185, 129, 0.3);
@@ -441,7 +508,7 @@
             gap: 4px;
         }
 
-        .del-guardian-btn {
+        .btn-del-contact {
             background: transparent;
             color: #ff334b;
             border: none;
@@ -450,7 +517,60 @@
             padding: 4px;
         }
 
-        /* EMERGENCY HELPLINE TILES (FIX FOR RAW BLUE LINKS) */
+        /* EVIDENCE RECORDINGS VAULT */
+        .evidence-vault {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .evidence-item {
+            background: #090c13;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .evidence-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .evidence-stamp {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .btn-del-evidence {
+            background: rgba(255, 51, 75, 0.15);
+            color: #ff334b;
+            border: 1px solid rgba(255, 51, 75, 0.3);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .evidence-player {
+            width: 100%;
+            height: 36px;
+        }
+
+        .evidence-download {
+            font-size: 0.78rem;
+            color: #38bdf8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* HELPLINES */
         .helpline-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -471,9 +591,7 @@
             transition: transform 0.15s;
         }
 
-        .hl-tile:hover {
-            transform: translateY(-2px);
-        }
+        .hl-tile:hover { transform: translateY(-2px); }
 
         .hl-tile strong {
             font-size: 1.35rem;
@@ -489,42 +607,38 @@
             display: block;
         }
 
-        .hl-red {
-            border-bottom: 3px solid #ff334b;
-        }
+        .hl-red { border-bottom: 3px solid #ff334b; }
+        .hl-purple { border-bottom: 3px solid #a855f7; }
+        .hl-orange { border-bottom: 3px solid #f97316; }
+        .hl-blue { border-bottom: 3px solid #0284c7; }
 
-        .hl-purple {
-            border-bottom: 3px solid #a855f7;
-        }
-
-        .hl-orange {
-            border-bottom: 3px solid #f97316;
-        }
-
-        .hl-blue {
-            border-bottom: 3px solid #0284c7;
-        }
-
-        /* OVERLAYS */
-        .hidden {
-            display: none !important;
-        }
-
+        /* STROBE SCREEN */
         .strobe-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 50px;
         }
 
+        .btn-stop-strobe-floating {
+            background: #000;
+            color: #fff;
+            border: 3px solid #fff;
+            padding: 16px 32px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 0 30px #000;
+        }
+
+        /* FAKE CALL */
         .fake-call-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: #040508;
             z-index: 10000;
             display: flex;
@@ -578,21 +692,13 @@
             cursor: pointer;
         }
 
-        .reject-call {
-            background-color: #ef4444;
-        }
-
-        .accept-call {
-            background-color: #10b981;
-        }
+        .reject-call { background-color: #ef4444; }
+        .accept-call { background-color: #10b981; }
 
         /* CALCULATOR */
         .calc-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: #000;
             z-index: 11000;
             display: flex;
@@ -632,163 +738,211 @@
             cursor: pointer;
         }
 
-        .calc-btn.op {
-            background: #3d3d3d;
-            color: #ff9f0a;
-        }
-
-        .calc-btn.eq-key {
-            background: #ff9f0a;
-            color: white;
-        }
-
-        .calc-btn.exit-key {
-            background: #555;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        .calc-btn.zero-key {
-            grid-column: span 2;
-            border-radius: 35px;
-            text-align: left;
-            padding-left: 24px;
-        }
+        .calc-btn.op { background: #3d3d3d; color: #ff9f0a; }
+        .calc-btn.eq-key { background: #ff9f0a; color: white; }
+        .calc-btn.exit-key { background: #555; font-size: 0.85rem; font-weight: 700; }
+        .calc-btn.zero-key { grid-column: span 2; border-radius: 35px; text-align: left; padding-left: 24px; }
     </style>
 </head>
-
 <body>
-    <div id="strobeOverlay" class="strobe-screen hidden"></div>
+    <div id="strobeOverlay" class="strobe-screen hidden">
+        <button class="btn-stop-strobe-floating" onclick="toggleStrobe(false)">STOP STROBE LIGHT (OFF)</button>
+    </div>
 
-    <div class="dashboard-wrapper">
+    <!-- AUTHENTICATION DIALOG (LOGIN & REGISTER) -->
+    <div id="authOverlay" class="auth-overlay">
+        <div class="auth-card">
+            <div class="auth-brand">
+                <div class="auth-shield">🛡️</div>
+                <h2>Sahaay<span>.</span></h2>
+                <p>Personal Emergency Response & Guardian System</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUser" placeholder="e.g. aditya" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPass" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-auth">Log In to Sahaay</button>
+                <p class="auth-switch">Don't have an account? <a onclick="toggleAuth(true)">Register Profile</a></p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form hidden" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="e.g. Aditya Shukla" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="regUser" placeholder="aditya" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="regPass" placeholder="••••••••" required autocomplete="new-password">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" id="regAge" placeholder="21" min="10" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Profession</label>
+                        <input type="text" id="regProf" placeholder="Student / IT Engineer" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-auth">Create Safety Profile</button>
+                <p class="auth-switch">Already registered? <a onclick="toggleAuth(false)">Log In</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="dashboardApp" class="dashboard-wrapper hidden">
         <!-- HEADER -->
         <header class="app-header">
             <div class="header-brand">
-                <span class="logo-shield">🛡️</span>
+                <span class="header-shield">🛡️</span>
                 <div>
                     <h1>Sahaay<span>.</span></h1>
-                    <p class="user-badge">Protected: <strong id="userNameLabel">Somya Sharma</strong></p>
+                    <p class="user-pill">Protected: <strong id="topUserName">User</strong></p>
                 </div>
             </div>
             <div class="header-actions">
-                <button class="nav-btn" onclick="openDecoy()">🧮 Decoy</button>
-                <button class="nav-btn btn-logout" onclick="logoutUser()">Log Out</button>
+                <button class="header-btn" onclick="openDecoy()">🧮 Decoy</button>
+                <button class="header-btn btn-signout" onclick="handleLogout()">Log Out</button>
             </div>
         </header>
 
-        <!-- MAIN RESPONSIVE TWO-COLUMN GRID -->
+        <!-- DASHBOARD GRID -->
         <main class="dashboard-grid">
-            <!-- LEFT COLUMN: BEACON & DETERRENTS -->
+            <!-- LEFT COLUMN: BEACON & CONTROLS -->
             <section class="grid-col">
                 <!-- GPS Card -->
-                <div class="glass-card gps-card">
-                    <div class="gps-row">
+                <div class="cyber-card">
+                    <div class="gps-flex">
                         <div class="radar-box">
-                            <span class="radar-dot"></span>
+                            <span class="radar-dot" id="radarIndicator"></span>
                         </div>
-                        <div class="gps-meta">
-                            <h3 id="gpsStatus">High-Precision GPS Locked (±85m)</h3>
-                            <p class="gps-coords" id="coordsText">Lat: 23.078502 | Long: 72.538063</p>
+                        <div class="gps-info">
+                            <h3 id="gpsStatusHeading">Connecting to Satellite Lock...</h3>
+                            <p class="gps-coords" id="coordsLabel">Lat: --.---- | Long: --.----</p>
                         </div>
                     </div>
-                    <div class="gps-buttons">
-                        <button class="pill-btn" onclick="shareLocation()">📍 Share Map Link</button>
-                        <button class="pill-btn" onclick="recalibrateGPS()">🔄 Recalibrate</button>
+                    <div class="gps-actions">
+                        <button class="pill-btn" onclick="copyMapLocation()">📍 Share Map Link</button>
+                        <button class="pill-btn" onclick="refreshGPSLocation()">🔄 Recalibrate</button>
                     </div>
                 </div>
 
-                <!-- SOS Emergency Centerpiece -->
-                <div class="glass-card sos-wrapper">
-                    <button class="sos-anchor" id="sosMainBtn" onclick="triggerSOS()">
-                        <span class="sos-text">SOS</span>
-                        <span class="sos-subtext">HOLD / TAP TO ALERT</span>
+                <!-- SOS Primary Button -->
+                <div class="cyber-card sos-container">
+                    <button class="sos-btn" id="sosMainBtn" onclick="triggerComprehensiveSOS()">
+                        <span class="sos-main-txt">SOS</span>
+                        <span class="sos-sub-txt">TAP TO DISPATCH</span>
                     </button>
-                    <p class="sos-note">One tap alerts saved guardians via SMS, WhatsApp, and registers with backend
-                        dispatch.</p>
+                    <p class="sos-info-note">Dispatches full profile (Name, Age, Profession, Exact Coordinates & Maps Pin) via SMS, WhatsApp, and emergency dispatch.</p>
                 </div>
 
-                <!-- 4 Deterrent Action Buttons -->
+                <!-- 4 Action Deterrent Tiles -->
                 <div class="action-grid">
-                    <button class="action-tile border-red" onclick="toggleSiren()">
-                        <span class="tile-icon">🚨</span>
-                        <div class="tile-info">
-                            <strong id="sirenLabel">Acoustic Siren</strong>
-                            <small>Dual High-Decibel Tone</small>
+                    <!-- Acoustic Siren -->
+                    <button class="action-tile border-red" id="sirenTile" onclick="toggleSiren()">
+                        <span class="tile-emoji">🚨</span>
+                        <div class="tile-body">
+                            <strong id="sirenTileTitle">Acoustic Siren</strong>
+                            <small id="sirenTileSub">Dual High-Decibel Tone</small>
                         </div>
                     </button>
 
-                    <button class="action-tile border-amber" onclick="toggleStrobe()">
-                        <span class="tile-icon">⚡</span>
-                        <div class="tile-info">
-                            <strong id="strobeLabel">Disorient Strobe</strong>
-                            <small>Visual Flashing Light</small>
+                    <!-- Dedicated Strobe Light with ON/OFF Toggle -->
+                    <button class="action-tile border-amber" id="strobeTile" onclick="toggleStrobe()">
+                        <span class="tile-emoji">⚡</span>
+                        <div class="tile-body">
+                            <strong id="strobeTileTitle">Strobe Light (OFF)</strong>
+                            <small id="strobeTileSub">Click to Turn ON</small>
                         </div>
                     </button>
 
-                    <button class="action-tile border-blue" onclick="startFakeCall()">
-                        <span class="tile-icon">📞</span>
-                        <div class="tile-info">
-                            <strong id="fakeCallLabel">Fake Incoming Call</strong>
-                            <small>Ring in 10 Seconds</small>
+                    <!-- Fake Call Companion -->
+                    <button class="action-tile border-blue" id="fakeCallTile" onclick="triggerFakeCall()">
+                        <span class="tile-emoji">📞</span>
+                        <div class="tile-body">
+                            <strong id="fakeCallTileTitle">Fake Incoming Call</strong>
+                            <small id="fakeCallTileSub">Ring in 10 Seconds</small>
                         </div>
                     </button>
 
-                    <button class="action-tile border-blue" onclick="toggleAudioRecorder()">
-                        <span class="tile-icon">🎙️</span>
-                        <div class="tile-info">
-                            <strong id="recordLabel">Record Evidence</strong>
-                            <small id="recordSub">Secret Microphone Log</small>
+                    <!-- Audio Evidence Recorder -->
+                    <button class="action-tile border-blue" id="recordTile" onclick="toggleEvidenceRecorder()">
+                        <span class="tile-emoji">🎙️</span>
+                        <div class="tile-body">
+                            <strong id="recordTileTitle">Record Evidence</strong>
+                            <small id="recordTileSub">Secret Microphone Log</small>
                         </div>
                     </button>
                 </div>
 
-                <!-- Recording Playback Container (Reveals after stopping record) -->
-                <div class="glass-card hidden" id="audioPlayerCard">
-                    <h3 class="card-title">Captured Evidence</h3>
-                    <div id="playbackSlot" style="margin-top: 10px;"></div>
+                <!-- Audio Evidence Vault Section -->
+                <div class="cyber-card" id="evidenceVaultCard">
+                    <h3 class="card-heading">Captured Audio Evidence Vault</h3>
+                    <p class="card-desc">Recordings are timestamped, playable, and can be removed anytime.</p>
+                    <div class="evidence-vault" id="evidenceVaultList">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
             </section>
 
-            <!-- RIGHT COLUMN: PROFILE & GUARDIANS -->
+            <!-- RIGHT COLUMN: IDENTITY & GUARDIANS -->
             <section class="grid-col">
-                <!-- User Profile Card -->
-                <div class="glass-card">
-                    <h3 class="card-title">Active Identity</h3>
-                    <div class="profile-list">
-                        <div class="profile-item">
+                <!-- User Profile Identity -->
+                <div class="cyber-card">
+                    <h3 class="card-heading">Active Identity</h3>
+                    <div class="identity-table">
+                        <div class="id-row">
                             <span>Full Name:</span>
-                            <strong id="profileName">Somya Sharma</strong>
+                            <strong id="profNameDisplay">--</strong>
                         </div>
-                        <div class="profile-item">
+                        <div class="id-row">
                             <span>Profession:</span>
-                            <strong id="profileProf">Student</strong>
+                            <strong id="profProfDisplay">--</strong>
                         </div>
-                        <div class="profile-item">
+                        <div class="id-row">
                             <span>Age:</span>
-                            <strong id="profileAge">21</strong>
+                            <strong id="profAgeDisplay">--</strong>
+                        </div>
+                        <div class="id-row">
+                            <span>Username:</span>
+                            <strong id="profUserDisplay">--</strong>
                         </div>
                     </div>
                 </div>
 
-                <!-- Guardian Contact Manager -->
-                <div class="glass-card">
-                    <h3 class="card-title">Saved Emergency Guardians</h3>
+                <!-- Guardian Emergency Contacts -->
+                <div class="cyber-card">
+                    <h3 class="card-heading">Saved Emergency Guardians</h3>
                     <p class="card-desc">Direct one-tap calling & rapid dispatch target.</p>
-
-                    <div class="contact-row">
-                        <input type="tel" id="contactInputField" placeholder="Enter 10-digit phone number"
-                            maxlength="10">
-                        <button class="btn-add" onclick="addNewContact()">Add</button>
+                    
+                    <div class="contact-input-row">
+                        <input type="tel" id="newGuardianNumber" placeholder="Enter 10-digit mobile number" maxlength="10">
+                        <button class="btn-add-contact" onclick="saveNewGuardian()">Add</button>
                     </div>
 
                     <ul class="guardian-list" id="guardianListUI">
-                        <!-- Populated by JS -->
+                        <!-- Dynamically filled -->
                     </ul>
                 </div>
 
-                <!-- Instant Helplines Grid -->
-                <div class="glass-card">
-                    <h3 class="card-title">Instant Direct Helplines</h3>
+                <!-- Instant Government Emergency Lines -->
+                <div class="cyber-card">
+                    <h3 class="card-heading">Instant Direct Helplines</h3>
                     <div class="helpline-grid">
                         <a href="tel:112" class="hl-tile hl-red">
                             <strong>112</strong>
@@ -817,15 +971,15 @@
         <div class="call-dialog">
             <div class="avatar-ring">👤</div>
             <h2 class="caller-title">Papa (Mobile)</h2>
-            <p class="calling-state" id="fakeCallStateText">Incoming Call...</p>
+            <p class="calling-state" id="fakeCallStatus">Incoming Call...</p>
             <div class="call-actions-row">
-                <button class="call-action-btn reject-call" onclick="closeFakeCall()">✕</button>
-                <button class="call-action-btn accept-call" onclick="answerFakeCall()">📞</button>
+                <button class="call-action-btn reject-call" onclick="endFakeCall()">✕</button>
+                <button class="call-action-btn accept-call" onclick="acceptFakeCall()">📞</button>
             </div>
         </div>
     </div>
 
-    <!-- CALCULATOR MODAL -->
+    <!-- CAMOUFLAGE CALCULATOR -->
     <div id="decoyCalcModal" class="calc-container hidden">
         <div class="calc-panel">
             <div class="calc-display" id="calcDisplay">0</div>
@@ -852,194 +1006,473 @@
         </div>
     </div>
 
-    <!-- INLINE JAVASCRIPT ENGINE -->
+    <!-- APPLICATION ENGINE -->
     <script>
-        // State
-        let currentCoords = { lat: 23.078502, lng: 72.538063 };
-        let guardianContacts = JSON.parse(localStorage.getItem('sahaay_contacts') || '["9876543210"]');
-        let sirenActive = false, sirenAudio = null, sirenOsc = null, sirenInterval = null;
-        let strobeActive = false, strobeInterval = null;
-        let mediaRecorder = null, audioChunks = [];
+        // Global State
+        const Sahaay = {
+            user: null,
+            coords: { lat: null, lng: null, accuracy: null },
+            contacts: [],
+            recordings: [],
+            sirenActive: false,
+            sirenAudio: null,
+            sirenOsc: null,
+            sirenInterval: null,
+            strobeActive: false,
+            strobeInterval: null,
+            mediaRecorder: null,
+            audioChunks: []
+        };
 
-        // Geolocation
-        function recalibrateGPS() {
-            if ('geolocation' in navigator) {
-                document.getElementById('gpsStatus').textContent = 'Acquiring Satellite Lock...';
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    currentCoords.lat = pos.coords.latitude.toFixed(6);
-                    currentCoords.lng = pos.coords.longitude.toFixed(6);
-                    const acc = Math.round(pos.coords.accuracy);
-                    document.getElementById('gpsStatus').textContent = `High-Precision GPS Locked (±${acc}m)`;
-                    document.getElementById('coordsText').textContent = `Lat: ${currentCoords.lat} | Long: ${currentCoords.lng}`;
+        // 1. AUTHENTICATION (LOGIN, REGISTER, SESSION, LOGOUT)
+        function toggleAuth(showRegister) {
+            document.getElementById('loginForm').classList.toggle('hidden', showRegister);
+            document.getElementById('registerForm').classList.toggle('hidden', !showRegister);
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUser').value.trim();
+            const password = document.getElementById('loginPass').value;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
                 });
+                const data = await res.json();
+                if (data.success) {
+                    activateSession(data.user);
+                } else {
+                    alert(data.message || 'Login failed.');
+                }
+            } catch (err) {
+                alert('Could not reach backend server.');
             }
         }
 
-        function shareLocation() {
-            const url = `https://www.google.com/maps?q=${currentCoords.lat},${currentCoords.lng}`;
-            navigator.clipboard.writeText(url);
+        async function handleRegister(e) {
+            e.preventDefault();
+            const payload = {
+                name: document.getElementById('regName').value.trim(),
+                username: document.getElementById('regUser').value.trim(),
+                password: document.getElementById('regPass').value,
+                age: document.getElementById('regAge').value,
+                profession: document.getElementById('regProf').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    activateSession(data.user);
+                } else {
+                    alert(data.message || 'Registration failed.');
+                }
+            } catch (err) {
+                alert('Could not reach backend server.');
+            }
+        }
+
+        function activateSession(user) {
+            Sahaay.user = user;
+            Sahaay.contacts = user.contacts || [];
+            Sahaay.recordings = user.recordings || [];
+            localStorage.setItem('sahaay_active_session', JSON.stringify(user));
+
+            // Populate User Meta
+            document.getElementById('topUserName').textContent = user.name.split(' ')[0];
+            document.getElementById('profNameDisplay').textContent = user.name;
+            document.getElementById('profProfDisplay').textContent = user.profession || 'Student';
+            document.getElementById('profAgeDisplay').textContent = user.age || 'N/A';
+            document.getElementById('profUserDisplay').textContent = '@' + user.username;
+
+            document.getElementById('authOverlay').classList.add('hidden');
+            document.getElementById('dashboardApp').classList.remove('hidden');
+
+            renderGuardians();
+            renderEvidenceVault();
+            refreshGPSLocation();
+        }
+
+        function handleLogout() {
+            if (confirm('Log out from Sahaay? Your session will be safely cleared.')) {
+                localStorage.removeItem('sahaay_active_session');
+                location.reload();
+            }
+        }
+
+        // On Page Load: Check Active Session
+        window.addEventListener('DOMContentLoaded', () => {
+            const stored = localStorage.getItem('sahaay_active_session');
+            if (stored) {
+                try {
+                    activateSession(JSON.parse(stored));
+                } catch (e) {
+                    localStorage.removeItem('sahaay_active_session');
+                }
+            }
+        });
+
+        // 2. HIGH ACCURACY GEOLOCATION
+        function refreshGPSLocation() {
+            if ('geolocation' in navigator) {
+                document.getElementById('gpsStatusHeading').textContent = 'Acquiring Satellite Lock...';
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        Sahaay.coords.lat = pos.coords.latitude.toFixed(6);
+                        Sahaay.coords.lng = pos.coords.longitude.toFixed(6);
+                        Sahaay.coords.accuracy = Math.round(pos.coords.accuracy);
+
+                        document.getElementById('gpsStatusHeading').textContent = `GPS Locked (±${Sahaay.coords.accuracy}m Accuracy)`;
+                        document.getElementById('coordsLabel').textContent = `Lat: ${Sahaay.coords.lat} | Long: ${Sahaay.coords.lng}`;
+                        document.getElementById('radarIndicator').style.boxShadow = '0 0 16px #10b981';
+                    },
+                    (err) => {
+                        document.getElementById('gpsStatusHeading').textContent = 'GPS Permission Denied. Please Enable.';
+                        console.warn('GPS Warning:', err.message);
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 3000 }
+                );
+            }
+        }
+
+        function copyMapLocation() {
+            if (!Sahaay.coords.lat) {
+                alert('Acquiring GPS location. Please wait a moment.');
+                return;
+            }
+            const mapUrl = `https://www.google.com/maps?q=${Sahaay.coords.lat},${Sahaay.coords.lng}`;
+            navigator.clipboard.writeText(mapUrl);
             alert('Live Google Maps link copied to clipboard!');
         }
 
-        // SOS Trigger
-        function triggerSOS() {
-            const mapUrl = `https://www.google.com/maps?q=${currentCoords.lat},${currentCoords.lng}`;
-            const msg = `EMERGENCY ALERT from Somya Sharma! I need immediate help. My current live location is: ${mapUrl}`;
-            if (guardianContacts.length > 0) {
-                window.location.href = `sms:${guardianContacts.join(',')}?body=${encodeURIComponent(msg)}`;
+        // 3. COMPREHENSIVE EMERGENCY & POLICE SOS BROADCAST
+        async function triggerComprehensiveSOS() {
+            if (!Sahaay.coords.lat) {
+                alert('Waiting for GPS lock. Please allow location access.');
+                return;
+            }
+
+            const mapUrl = `https://www.google.com/maps?q=${Sahaay.coords.lat},${Sahaay.coords.lng}`;
+            const timeStr = new Date().toLocaleString();
+
+            // Emergency payload containing name, age, profession, coords, accuracy, time
+            const alertBody = 
+`🚨 [EMERGENCY ALERT - SAHAAY SAFETY] 🚨
+Victim Name: ${Sahaay.user?.name || 'Protected User'}
+Age: ${Sahaay.user?.age || 'N/A'} | Profession: ${Sahaay.user?.profession || 'N/A'}
+Current Live Location: ${mapUrl}
+Coordinates: Lat ${Sahaay.coords.lat}, Long ${Sahaay.coords.lng} (±${Sahaay.coords.accuracy}m)
+Timestamp: ${timeStr}
+I am in danger and require immediate assistance!`;
+
+            // Telemetry to Backend
+            try {
+                fetch('/api/sos/broadcast', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userDetails: Sahaay.user,
+                        coordinates: {
+                            latitude: Sahaay.coords.lat,
+                            longitude: Sahaay.coords.lng,
+                            accuracy: Sahaay.coords.accuracy
+                        },
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (e) {
+                console.error('Failed to notify backend API:', e);
+            }
+
+            // Launch Native Cellular SMS or WhatsApp Blast
+            if (Sahaay.contacts.length > 0) {
+                const targets = Sahaay.contacts.join(',');
+                window.location.href = `sms:${targets}?body=${encodeURIComponent(alertBody)}`;
             } else {
-                window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+                window.open(`https://wa.me/?text=${encodeURIComponent(alertBody)}`, '_blank');
             }
         }
 
-        // Siren (Web Audio API)
+        // 4. ACOUSTIC SIREN (Web Audio API)
         function toggleSiren() {
-            if (!sirenActive) {
+            const tile = document.getElementById('sirenTile');
+            const title = document.getElementById('sirenTileTitle');
+            const sub = document.getElementById('sirenTileSub');
+
+            if (!Sahaay.sirenActive) {
                 const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                sirenAudio = new AudioCtx();
-                sirenOsc = sirenAudio.createOscillator();
-                const gain = sirenAudio.createGain();
-                sirenOsc.type = 'sawtooth';
-                gain.gain.setValueAtTime(1.0, sirenAudio.currentTime);
-                sirenOsc.connect(gain);
-                gain.connect(sirenAudio.destination);
-                sirenOsc.start();
+                Sahaay.sirenAudio = new AudioCtx();
+                Sahaay.sirenOsc = Sahaay.sirenAudio.createOscillator();
+                const gain = Sahaay.sirenAudio.createGain();
+
+                Sahaay.sirenOsc.type = 'sawtooth';
+                gain.gain.setValueAtTime(1.0, Sahaay.sirenAudio.currentTime);
+                Sahaay.sirenOsc.connect(gain);
+                gain.connect(Sahaay.sirenAudio.destination);
+                Sahaay.sirenOsc.start();
+
                 let toggle = false;
-                sirenInterval = setInterval(() => {
-                    if (sirenOsc) {
-                        sirenOsc.frequency.setTargetAtTime(toggle ? 1000 : 750, sirenAudio.currentTime, 0.08);
+                Sahaay.sirenInterval = setInterval(() => {
+                    if (Sahaay.sirenOsc) {
+                        Sahaay.sirenOsc.frequency.setTargetAtTime(toggle ? 1000 : 750, Sahaay.sirenAudio.currentTime, 0.08);
                         toggle = !toggle;
                     }
                 }, 250);
-                sirenActive = true;
-                document.getElementById('sirenLabel').textContent = 'Stop Siren';
+
+                Sahaay.sirenActive = true;
+                tile.classList.add('tile-active');
+                title.textContent = 'Stop Siren (ACTIVE)';
+                sub.textContent = 'Click to Silence';
             } else {
-                clearInterval(sirenInterval);
-                if (sirenOsc) { sirenOsc.stop(); sirenOsc.disconnect(); }
-                sirenActive = false;
-                document.getElementById('sirenLabel').textContent = 'Acoustic Siren';
+                clearInterval(Sahaay.sirenInterval);
+                if (Sahaay.sirenOsc) {
+                    Sahaay.sirenOsc.stop();
+                    Sahaay.sirenOsc.disconnect();
+                }
+                Sahaay.sirenActive = false;
+                tile.classList.remove('tile-active');
+                title.textContent = 'Acoustic Siren';
+                sub.textContent = 'Dual High-Decibel Tone';
             }
         }
 
-        // Strobe
-        function toggleStrobe() {
+        // 5. STROBE LIGHT WITH CLEAR ON / OFF SWITCH
+        function toggleStrobe(forceState) {
             const overlay = document.getElementById('strobeOverlay');
-            if (!strobeActive) {
+            const tile = document.getElementById('strobeTile');
+            const title = document.getElementById('strobeTileTitle');
+            const sub = document.getElementById('strobeTileSub');
+
+            const nextState = forceState !== undefined ? forceState : !Sahaay.strobeActive;
+
+            if (nextState) {
                 overlay.classList.remove('hidden');
                 let white = true;
-                strobeInterval = setInterval(() => {
+                Sahaay.strobeInterval = setInterval(() => {
                     overlay.style.backgroundColor = white ? '#ffffff' : '#ff0037';
                     white = !white;
                 }, 70);
-                strobeActive = true;
-                document.getElementById('strobeLabel').textContent = 'Stop Strobe';
+
+                Sahaay.strobeActive = true;
+                tile.classList.add('tile-active');
+                title.textContent = 'Strobe Light (ON)';
+                sub.textContent = 'Click to Turn OFF';
             } else {
-                clearInterval(strobeInterval);
+                clearInterval(Sahaay.strobeInterval);
                 overlay.classList.add('hidden');
-                strobeActive = false;
-                document.getElementById('strobeLabel').textContent = 'Disorient Strobe';
+                Sahaay.strobeActive = false;
+                tile.classList.remove('tile-active');
+                title.textContent = 'Strobe Light (OFF)';
+                sub.textContent = 'Click to Turn ON';
             }
         }
 
-        // Fake Call
-        function startFakeCall() {
-            document.getElementById('fakeCallLabel').textContent = 'Calling in 10s...';
+        // 6. FAKE CALL SIMULATOR
+        function triggerFakeCall() {
+            const title = document.getElementById('fakeCallTileTitle');
+            const sub = document.getElementById('fakeCallTileSub');
+            sub.textContent = 'Calling in 10s...';
+
             setTimeout(() => {
                 document.getElementById('fakeCallModal').classList.remove('hidden');
+                document.getElementById('fakeCallStatus').textContent = 'Incoming Call...';
             }, 10000);
         }
-        function closeFakeCall() {
+
+        function endFakeCall() {
             document.getElementById('fakeCallModal').classList.add('hidden');
-            document.getElementById('fakeCallLabel').textContent = 'Fake Incoming Call';
-        }
-        function answerFakeCall() {
-            document.getElementById('fakeCallStateText').textContent = 'Connected (00:04)';
-            alert('Call Answered: "Beta, I am just 100m away with the car, stay right where you are."');
-            closeFakeCall();
+            document.getElementById('fakeCallTileSub').textContent = 'Ring in 10 Seconds';
         }
 
-        // Audio Evidence Recorder
-        async function toggleAudioRecorder() {
-            if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+        function acceptFakeCall() {
+            document.getElementById('fakeCallStatus').textContent = 'Connected (00:04)';
+            alert('Call Connected: "Beta, I am just 100m away near the intersection. Stay right there, arriving in 1 minute."');
+            endFakeCall();
+        }
+
+        // 7. AUDIO EVIDENCE RECORDING, PLAYBACK & DELETION
+        async function toggleEvidenceRecorder() {
+            const title = document.getElementById('recordTileTitle');
+            const sub = document.getElementById('recordTileSub');
+            const tile = document.getElementById('recordTile');
+
+            if (!Sahaay.mediaRecorder || Sahaay.mediaRecorder.state === 'inactive') {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-                    mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
-                    mediaRecorder.onstop = () => {
-                        const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                        const url = URL.createObjectURL(blob);
-                        document.getElementById('playbackSlot').innerHTML = `
-                            <audio controls src="${url}" style="width: 100%;"></audio>
-                            <a href="${url}" download="sahaay_evidence.webm" style="color: #38bdf8; display: block; margin-top: 6px; font-size: 0.8rem; font-weight: 600;">⬇️ Download Evidence Audio</a>
-                        `;
-                        document.getElementById('audioPlayerCard').classList.remove('hidden');
+                    Sahaay.mediaRecorder = new MediaRecorder(stream);
+                    Sahaay.audioChunks = [];
+
+                    Sahaay.mediaRecorder.ondataavailable = (e) => Sahaay.audioChunks.push(e.data);
+                    Sahaay.mediaRecorder.onstop = async () => {
+                        const blob = new Blob(Sahaay.audioChunks, { type: 'audio/webm' });
+                        const reader = new FileReader();
+                        reader.readAsDataURL(blob);
+                        reader.onloadend = async () => {
+                            const base64Audio = reader.result;
+                            const newRecord = {
+                                id: 'REC-' + Date.now(),
+                                audioData: base64Audio,
+                                timestamp: new Date().toLocaleString()
+                            };
+
+                            Sahaay.recordings.unshift(newRecord);
+                            renderEvidenceVault();
+
+                            // Sync to Server
+                            if (Sahaay.user) {
+                                fetch('/api/user/recordings', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        username: Sahaay.user.username,
+                                        recording: newRecord
+                                    })
+                                });
+                            }
+                        };
                     };
-                    mediaRecorder.start();
-                    document.getElementById('recordLabel').textContent = 'STOP RECORDING';
-                    document.getElementById('recordSub').textContent = 'Recording in background...';
-                } catch {
-                    alert('Microphone access is required to record evidence.');
+
+                    Sahaay.mediaRecorder.start();
+                    tile.classList.add('tile-active');
+                    title.textContent = 'STOP RECORDING';
+                    sub.textContent = 'Capturing background audio...';
+                } catch (err) {
+                    alert('Microphone access is required to capture evidence.');
                 }
             } else {
-                mediaRecorder.stop();
-                document.getElementById('recordLabel').textContent = 'Record Evidence';
-                document.getElementById('recordSub').textContent = 'Secret Microphone Log';
+                Sahaay.mediaRecorder.stop();
+                tile.classList.remove('tile-active');
+                title.textContent = 'Record Evidence';
+                sub.textContent = 'Secret Microphone Log';
             }
         }
 
-        // Guardian Contacts UI
-        function renderContacts() {
+        function renderEvidenceVault() {
+            const container = document.getElementById('evidenceVaultList');
+            container.innerHTML = '';
+
+            if (Sahaay.recordings.length === 0) {
+                container.innerHTML = `<p style="font-size: 0.8rem; color: #64748b;">No recorded audio evidence logged yet.</p>`;
+                return;
+            }
+
+            Sahaay.recordings.forEach((rec) => {
+                const item = document.createElement('div');
+                item.className = 'evidence-item';
+                item.innerHTML = `
+                    <div class="evidence-top">
+                        <span class="evidence-stamp">🕒 ${rec.timestamp}</span>
+                        <button class="btn-del-evidence" onclick="deleteEvidence('${rec.id}')">🗑️ Delete</button>
+                    </div>
+                    <audio class="evidence-player" controls src="${rec.audioData}"></audio>
+                    <a class="evidence-download" href="${rec.audioData}" download="sahaay_evidence_${rec.id}.webm">⬇️ Download Audio (.webm)</a>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        async function deleteEvidence(recId) {
+            if (confirm('Delete this audio evidence recording permanently?')) {
+                Sahaay.recordings = Sahaay.recordings.filter(r => r.id !== recId);
+                renderEvidenceVault();
+
+                if (Sahaay.user) {
+                    fetch('/api/user/recordings', {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            username: Sahaay.user.username,
+                            recordingId: recId
+                        })
+                    });
+                }
+            }
+        }
+
+        // 8. GUARDIAN MANAGEMENT & DIRECT PHONE CALLING
+        function renderGuardians() {
             const list = document.getElementById('guardianListUI');
             list.innerHTML = '';
-            guardianContacts.forEach((num, idx) => {
+
+            if (Sahaay.contacts.length === 0) {
+                list.innerHTML = `<li style="font-size: 0.8rem; color: #64748b; padding: 6px 0;">No guardian contacts saved yet.</li>`;
+                return;
+            }
+
+            Sahaay.contacts.forEach((num, idx) => {
                 const li = document.createElement('li');
                 li.className = 'guardian-card';
                 li.innerHTML = `
                     <span class="guardian-num">+91 ${num}</span>
                     <div class="guardian-btns">
-                        <a href="tel:+91${num}" class="call-guardian-btn">📞 Call</a>
-                        <button class="del-guardian-btn" onclick="removeContact(${idx})">✕</button>
+                        <a href="tel:+91${num}" class="call-btn-link">📞 Call</a>
+                        <button class="btn-del-contact" onclick="deleteGuardian(${idx})">✕</button>
                     </div>
                 `;
                 list.appendChild(li);
             });
-            localStorage.setItem('sahaay_contacts', JSON.stringify(guardianContacts));
         }
 
-        function addNewContact() {
-            const input = document.getElementById('contactInputField');
-            const val = input.value.trim();
-            if (/^\d{10}$/.test(val)) {
-                guardianContacts.push(val);
-                input.value = '';
-                renderContacts();
-            } else {
-                alert('Please enter a valid 10-digit number.');
+        async function saveNewGuardian() {
+            const input = document.getElementById('newGuardianNumber');
+            const num = input.value.trim();
+
+            if (!/^\d{10}$/.test(num)) {
+                alert('Please enter a valid 10-digit mobile number.');
+                return;
+            }
+
+            if (Sahaay.contacts.includes(num)) {
+                alert('Number is already added.');
+                return;
+            }
+
+            Sahaay.contacts.push(num);
+            input.value = '';
+            renderGuardians();
+
+            if (Sahaay.user) {
+                fetch('/api/user/contacts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: Sahaay.user.username,
+                        contacts: Sahaay.contacts
+                    })
+                });
             }
         }
 
-        function removeContact(i) {
-            guardianContacts.splice(i, 1);
-            renderContacts();
+        async function deleteGuardian(idx) {
+            Sahaay.contacts.splice(idx, 1);
+            renderGuardians();
+
+            if (Sahaay.user) {
+                fetch('/api/user/contacts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: Sahaay.user.username,
+                        contacts: Sahaay.contacts
+                    })
+                });
+            }
         }
 
-        // Decoy Calculator
-        let calcExpr = '';
+        // 9. CALCULATOR DECOY
+        let calcVal = '';
         function openDecoy() { document.getElementById('decoyCalcModal').classList.remove('hidden'); }
         function closeDecoy() { document.getElementById('decoyCalcModal').classList.add('hidden'); }
-        function calcDigit(d) { calcExpr += d; document.getElementById('calcDisplay').innerText = calcExpr; }
-        function calcOp(op) { if (op === 'C') calcExpr = ''; else calcExpr += op; document.getElementById('calcDisplay').innerText = calcExpr || '0'; }
-        function calcEvaluate() { try { calcExpr = String(eval(calcExpr)); document.getElementById('calcDisplay').innerText = calcExpr; } catch { calcExpr = ''; document.getElementById('calcDisplay').innerText = '0'; } }
-
-        function logoutUser() {
-            if (confirm('Log out from Sahaay?')) location.reload();
-        }
-
-        // Init
-        renderContacts();
-        recalibrateGPS();
+        function calcDigit(d) { calcVal += d; document.getElementById('calcDisplay').innerText = calcVal; }
+        function calcOp(op) { if (op === 'C') calcVal = ''; else calcVal += op; document.getElementById('calcDisplay').innerText = calcVal || '0'; }
+        function calcEvaluate() { try { calcVal = String(eval(calcVal)); document.getElementById('calcDisplay').innerText = calcVal; } catch { calcVal = ''; document.getElementById('calcDisplay').innerText = '0'; } }
     </script>
 </body>
-
 </html>

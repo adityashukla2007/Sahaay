@@ -9,11 +9,11 @@ const DB_FILE = path.join(__dirname, 'database.json');
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '25mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Initialize Local JSON Database
-function readDatabase() {
+// Database File Helpers
+function readDB() {
     try {
         if (!fs.existsSync(DB_FILE)) {
             const initialData = { users: [], incidents: [] };
@@ -23,20 +23,20 @@ function readDatabase() {
         const data = fs.readFileSync(DB_FILE, 'utf8');
         return JSON.parse(data || '{"users":[],"incidents":[]}');
     } catch (err) {
-        console.error('Error reading database file:', err);
+        console.error('Error reading database.json:', err);
         return { users: [], incidents: [] };
     }
 }
 
-function writeDatabase(data) {
+function writeDB(data) {
     try {
         fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
     } catch (err) {
-        console.error('Error writing to database:', err);
+        console.error('Error writing to database.json:', err);
     }
 }
 
-// ---------------- API ROUTES ----------------
+// ---------------- REST API ENDPOINTS ----------------
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -45,102 +45,169 @@ app.get('/api/health', (req, res) => {
 
 // 1. User Registration
 app.post('/api/auth/register', (req, res) => {
-    const { name, username, password, age, profession } = req.body;
+    try {
+        const { name, username, password, age, profession } = req.body;
+        if (!name || !username || !password) {
+            return res.status(400).json({ success: false, message: 'Name, username, and password are required.' });
+        }
 
-    if (!name || !username || !password) {
-        return res.status(400).json({ success: false, message: 'All required fields must be filled.' });
+        const db = readDB();
+        const cleanUser = username.trim().toLowerCase();
+        const existing = db.users.find(u => u.username.toLowerCase() === cleanUser);
+
+        if (existing) {
+            return res.status(409).json({ success: false, message: 'Username is already taken. Please choose another.' });
+        }
+
+        const newUser = {
+            id: 'USR-' + Date.now(),
+            name: name.trim(),
+            username: cleanUser,
+            password: password,
+            age: age || 'Not Specified',
+            profession: profession ? profession.trim() : 'Student',
+            contacts: [],
+            recordings: [],
+            createdAt: new Date().toISOString()
+        };
+
+        db.users.push(newUser);
+        writeDB(db);
+
+        const { password: _, ...safeUser } = newUser;
+        return res.status(201).json({ success: true, user: safeUser });
+    } catch (err) {
+        console.error('Register error:', err);
+        return res.status(500).json({ success: false, message: 'Internal server error.' });
     }
-
-    const db = readDatabase();
-    const existing = db.users.find(u => u.username.toLowerCase() === username.toLowerCase());
-
-    if (existing) {
-        return res.status(409).json({ success: false, message: 'Username is already registered.' });
-    }
-
-    const newUser = {
-        id: 'USR-' + Date.now(),
-        name,
-        username: username.toLowerCase(),
-        password, // For academic demo. In production, use bcrypt hashing.
-        age: age || 'N/A',
-        profession: profession || 'Student',
-        contacts: [],
-        createdAt: new Date().toISOString()
-    };
-
-    db.users.push(newUser);
-    writeDatabase(db);
-
-    const { password: _, ...safeUser } = newUser;
-    return res.status(201).json({ success: true, user: safeUser });
 });
 
 // 2. User Login
 app.post('/api/auth/login', (req, res) => {
-    const { username, password } = req.body;
+    try {
+        const { username, password } = req.body;
+        if (!username || !password) {
+            return res.status(400).json({ success: false, message: 'Enter both username and password.' });
+        }
 
-    const db = readDatabase();
-    const user = db.users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
+        const db = readDB();
+        const cleanUser = username.trim().toLowerCase();
+        const user = db.users.find(u => u.username.toLowerCase() === cleanUser && u.password === password);
 
-    if (!user) {
-        return res.status(401).json({ success: false, message: 'Invalid username or password.' });
+        if (!user) {
+            return res.status(401).json({ success: false, message: 'Invalid username or password.' });
+        }
+
+        const { password: _, ...safeUser } = user;
+        return res.status(200).json({ success: true, user: safeUser });
+    } catch (err) {
+        console.error('Login error:', err);
+        return res.status(500).json({ success: false, message: 'Internal server error.' });
     }
-
-    const { password: _, ...safeUser } = user;
-    return res.status(200).json({ success: true, user: safeUser });
 });
 
-// 3. Update User Contacts
+// 3. Sync User Contacts
 app.post('/api/user/contacts', (req, res) => {
-    const { username, contacts } = req.body;
+    try {
+        const { username, contacts } = req.body;
+        const db = readDB();
+        const userIdx = db.users.findIndex(u => u.username.toLowerCase() === (username || '').toLowerCase());
 
-    const db = readDatabase();
-    const userIndex = db.users.findIndex(u => u.username.toLowerCase() === username.toLowerCase());
+        if (userIdx === -1) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
 
-    if (userIndex === -1) {
-        return res.status(404).json({ success: false, message: 'User not found.' });
+        db.users[userIdx].contacts = contacts || [];
+        writeDB(db);
+        return res.status(200).json({ success: true, contacts: db.users[userIdx].contacts });
+    } catch (err) {
+        return res.status(500).json({ success: false, message: 'Error saving contacts.' });
     }
-
-    db.users[userIndex].contacts = contacts || [];
-    writeDatabase(db);
-
-    return res.status(200).json({ success: true, contacts: db.users[userIndex].contacts });
 });
 
-// 4. Trigger SOS & Broadcast Incident
+// 4. Save Audio Evidence Recording
+app.post('/api/user/recordings', (req, res) => {
+    try {
+        const { username, recording } = req.body;
+        const db = readDB();
+        const userIdx = db.users.findIndex(u => u.username.toLowerCase() === (username || '').toLowerCase());
+
+        if (userIdx === -1) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
+
+        if (!db.users[userIdx].recordings) {
+            db.users[userIdx].recordings = [];
+        }
+
+        db.users[userIdx].recordings.unshift(recording);
+        writeDB(db);
+        return res.status(200).json({ success: true, recordings: db.users[userIdx].recordings });
+    } catch (err) {
+        return res.status(500).json({ success: false, message: 'Error saving audio evidence.' });
+    }
+});
+
+// 5. Delete Audio Evidence Recording
+app.delete('/api/user/recordings', (req, res) => {
+    try {
+        const { username, recordingId } = req.body;
+        const db = readDB();
+        const userIdx = db.users.findIndex(u => u.username.toLowerCase() === (username || '').toLowerCase());
+
+        if (userIdx === -1) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
+
+        if (db.users[userIdx].recordings) {
+            db.users[userIdx].recordings = db.users[userIdx].recordings.filter(r => r.id !== recordingId);
+            writeDB(db);
+        }
+
+        return res.status(200).json({ success: true, recordings: db.users[userIdx].recordings || [] });
+    } catch (err) {
+        return res.status(500).json({ success: false, message: 'Error deleting recording.' });
+    }
+});
+
+// 6. SOS Telemetry Dispatch
 app.post('/api/sos/broadcast', (req, res) => {
-    const { username, latitude, longitude, accuracy, battery, contacts } = req.body;
+    try {
+        const { userDetails, coordinates, timestamp } = req.body;
+        const db = readDB();
 
-    const incident = {
-        incidentId: 'INC-' + Date.now(),
-        username: username || 'Anonymous User',
-        coordinates: { latitude, longitude, accuracy },
-        mapsUrl: `https://www.google.com/maps?q=${latitude},${longitude}`,
-        batteryLevel: battery || 'Unknown',
-        alertedContacts: contacts || [],
-        timestamp: new Date().toISOString()
-    };
+        const incidentRecord = {
+            incidentId: 'INC-' + Date.now(),
+            user: userDetails || {},
+            coordinates: coordinates || {},
+            mapsUrl: `https://www.google.com/maps?q=${coordinates?.latitude},${coordinates?.longitude}`,
+            timestamp: timestamp || new Date().toISOString()
+        };
 
-    const db = readDatabase();
-    db.incidents.unshift(incident);
-    writeDatabase(db);
+        db.incidents.unshift(incidentRecord);
+        writeDB(db);
 
-    console.log(`[EMERGENCY INCIDENT] User: ${incident.username} | Lat: ${latitude} | Long: ${longitude}`);
-    return res.status(201).json({ success: true, incident });
+        console.log(`[ALERT DISPATCHED] User: ${incidentRecord.user?.name} | Lat: ${coordinates?.latitude}, Lng: ${coordinates?.longitude}`);
+        return res.status(201).json({ success: true, incident: incidentRecord });
+    } catch (err) {
+        return res.status(500).json({ success: false, message: 'Dispatch log failed.' });
+    }
 });
-// 5. Admin Logs
+
+// 7. Admin Incident Telemetry View
 app.get('/api/admin/incidents', (req, res) => {
-    const db = readDatabase();
+    const db = readDB();
     res.status(200).json({ total: db.incidents.length, incidents: db.incidents });
 });
-// Fallback to Single Page App
+
+// SPA Route Catch-All
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`===============================================`);
-    console.log(` Sahaay Safety Portal v2.0 Live`);
-    console.log(` Listening on: http://localhost:${PORT}`);
+    console.log(` Sahaay Safety Portal v2.5 Live`);
+    console.log(` Server running on http://localhost:${PORT}`);
     console.log(`===============================================`);
 });
