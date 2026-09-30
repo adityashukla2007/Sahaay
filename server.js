@@ -105,23 +105,49 @@ app.post('/api/auth/login', (req, res) => {
         return res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 });
-
-// 3. Sync User Contacts
+// Sync and Save User Contacts to Cloud Database
 app.post('/api/user/contacts', (req, res) => {
     try {
         const { username, contacts } = req.body;
+        if (!username) {
+            return res.status(400).json({ success: false, message: 'Username is required.' });
+        }
+
         const db = readDB();
-        const userIdx = db.users.findIndex(u => u.username.toLowerCase() === (username || '').toLowerCase());
+        const userIdx = db.users.findIndex(u => u.username.toLowerCase() === username.trim().toLowerCase());
 
         if (userIdx === -1) {
             return res.status(404).json({ success: false, message: 'User not found.' });
         }
 
+        // Save contacts to server database
         db.users[userIdx].contacts = contacts || [];
         writeDB(db);
-        return res.status(200).json({ success: true, contacts: db.users[userIdx].contacts });
+
+        console.log(`[CONTACTS UPDATED] User: ${username} | Saved Contacts: ${db.users[userIdx].contacts.length}`);
+        return res.status(200).json({ 
+            success: true, 
+            contacts: db.users[userIdx].contacts,
+            user: db.users[userIdx]
+        });
     } catch (err) {
+        console.error('Error saving contacts:', err);
         return res.status(500).json({ success: false, message: 'Error saving contacts.' });
+    }
+});
+
+// Fetch latest profile & contacts (for cross-device synchronization)
+app.get('/api/user/profile/:username', (req, res) => {
+    try {
+        const db = readDB();
+        const user = db.users.find(u => u.username.toLowerCase() === req.params.username.trim().toLowerCase());
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
+        const { password: _, ...safeUser } = user;
+        return res.status(200).json({ success: true, user: safeUser });
+    } catch (err) {
+        return res.status(500).json({ success: false, message: 'Server error fetching profile.' });
     }
 });
 

@@ -1079,26 +1079,117 @@
             }
         }
 
-        function activateSession(user) {
-            Sahaay.user = user;
-            Sahaay.contacts = user.contacts || [];
-            Sahaay.recordings = user.recordings || [];
-            localStorage.setItem('sahaay_active_session', JSON.stringify(user));
+    // 1. Session Activation with Automatic Cloud Sync
+async function activateSession(user) {
+    Sahaay.user = user;
+    Sahaay.contacts = user.contacts || [];
+    Sahaay.recordings = user.recordings || [];
 
-            // Populate User Meta
-            document.getElementById('topUserName').textContent = user.name.split(' ')[0];
-            document.getElementById('profNameDisplay').textContent = user.name;
-            document.getElementById('profProfDisplay').textContent = user.profession || 'Student';
-            document.getElementById('profAgeDisplay').textContent = user.age || 'N/A';
-            document.getElementById('profUserDisplay').textContent = '@' + user.username;
+    // Save locally
+    localStorage.setItem('sahaay_active_session', JSON.stringify(user));
 
-            document.getElementById('authOverlay').classList.add('hidden');
-            document.getElementById('dashboardApp').classList.remove('hidden');
+    // Populate UI
+    document.getElementById('topUserName').textContent = user.name.split(' ')[0];
+    document.getElementById('profNameDisplay').textContent = user.name;
+    document.getElementById('profProfDisplay').textContent = user.profession || 'Student';
+    document.getElementById('profAgeDisplay').textContent = user.age || 'N/A';
+    document.getElementById('profUserDisplay').textContent = '@' + user.username;
 
+    document.getElementById('authOverlay').classList.add('hidden');
+    document.getElementById('dashboardApp').classList.remove('hidden');
+
+    renderGuardians();
+    renderEvidenceVault();
+    refreshGPSLocation();
+
+    // BACKGROUND CLOUD SYNC: Fetch latest contacts from server database
+    // (This guarantees if a contact was added on another phone, it pulls immediately)
+    try {
+        const syncRes = await fetch(`/api/user/profile/${user.username}`);
+        const syncData = await syncRes.json();
+        if (syncData.success && syncData.user) {
+            Sahaay.user = syncData.user;
+            Sahaay.contacts = syncData.user.contacts || [];
+            Sahaay.recordings = syncData.user.recordings || [];
+            localStorage.setItem('sahaay_active_session', JSON.stringify(syncData.user));
             renderGuardians();
             renderEvidenceVault();
-            refreshGPSLocation();
         }
+    } catch (e) {
+        console.warn('Background cloud sync deferred (offline or starting up).');
+    }
+}
+
+// 2. Add New Guardian (Instant Server Commit)
+async function saveNewGuardian() {
+    const input = document.getElementById('newGuardianNumber');
+    const num = input.value.trim();
+
+    if (!/^\d{10}$/.test(num)) {
+        alert('Please enter a valid 10-digit mobile number.');
+        return;
+    }
+
+    if (Sahaay.contacts.includes(num)) {
+        alert('This phone number is already in your guardian list.');
+        return;
+    }
+
+    // Add to state
+    Sahaay.contacts.push(num);
+    input.value = '';
+    renderGuardians();
+
+    // Immediately persist to Server Database for cross-device access
+    if (Sahaay.user) {
+        try {
+            const res = await fetch('/api/user/contacts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: Sahaay.user.username,
+                    contacts: Sahaay.contacts
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                // Update local storage copy
+                Sahaay.user.contacts = Sahaay.contacts;
+                localStorage.setItem('sahaay_active_session', JSON.stringify(Sahaay.user));
+                console.log('Contacts saved to cloud database successfully.');
+            }
+        } catch (err) {
+            console.error('Failed to sync contact to server:', err);
+        }
+    }
+}
+
+// 3. Delete Guardian (Instant Server Commit)
+async function deleteGuardian(idx) {
+    Sahaay.contacts.splice(idx, 1);
+    renderGuardians();
+
+    // Sync deletion across all devices via backend
+    if (Sahaay.user) {
+        try {
+            const res = await fetch('/api/user/contacts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: Sahaay.user.username,
+                    contacts: Sahaay.contacts
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                Sahaay.user.contacts = Sahaay.contacts;
+                localStorage.setItem('sahaay_active_session', JSON.stringify(Sahaay.user));
+            }
+        } catch (err) {
+            console.error('Failed to sync contact removal:', err);
+        }
+    }
+}    
 
         function handleLogout() {
             if (confirm('Log out from Sahaay? Your session will be safely cleared.')) {
