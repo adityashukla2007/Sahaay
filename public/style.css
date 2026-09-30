@@ -193,9 +193,17 @@ body {
     gap: 6px;
 }
 
-.btn-danger { background-color: #dc2626; }
-.btn-warning { background-color: #d97706; }
-.btn-secondary { background-color: #475569; }
+.btn-danger {
+    background-color: #dc2626;
+}
+
+.btn-warning {
+    background-color: #d97706;
+}
+
+.btn-secondary {
+    background-color: #475569;
+}
 
 /* Contact Management */
 .contact-input-row {
@@ -268,27 +276,53 @@ body {
     color: white;
 }
 
-.hl-num { font-size: 1.3rem; font-weight: 800; }
-.hl-desc { font-size: 0.72rem; opacity: 0.9; }
+.hl-num {
+    font-size: 1.3rem;
+    font-weight: 800;
+}
 
-.hl-red { background: linear-gradient(135deg, #ef4444, #991b1b); }
-.hl-purple { background: linear-gradient(135deg, #a855f7, #6b21a8); }
-.hl-orange { background: linear-gradient(135deg, #f97316, #9a3412); }
-.hl-blue { background: linear-gradient(135deg, #0284c7, #075985); }
+.hl-desc {
+    font-size: 0.72rem;
+    opacity: 0.9;
+}
+
+.hl-red {
+    background: linear-gradient(135deg, #ef4444, #991b1b);
+}
+
+.hl-purple {
+    background: linear-gradient(135deg, #a855f7, #6b21a8);
+}
+
+.hl-orange {
+    background: linear-gradient(135deg, #f97316, #9a3412);
+}
+
+.hl-blue {
+    background: linear-gradient(135deg, #0284c7, #075985);
+}
 
 /* Overlays (Strobe, Fake Call, Calculator) */
-.hidden { display: none !important; }
+.hidden {
+    display: none !important;
+}
 
 .strobe-overlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 9999;
     pointer-events: auto;
 }
 
 .fake-call-overlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: #0b0f19;
     z-index: 999;
     display: flex;
@@ -331,13 +365,21 @@ body {
     color: white;
 }
 
-.btn-decline { background-color: #ef4444; }
-.btn-accept { background-color: #22c55e; }
+.btn-decline {
+    background-color: #ef4444;
+}
+
+.btn-accept {
+    background-color: #22c55e;
+}
 
 /* Calculator Camouflage */
 .calc-overlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: #000;
     z-index: 1000;
     display: flex;

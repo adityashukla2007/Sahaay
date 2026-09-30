@@ -129,18 +129,15 @@ app.post('/api/sos/broadcast', (req, res) => {
     console.log(`[EMERGENCY INCIDENT] User: ${incident.username} | Lat: ${latitude} | Long: ${longitude}`);
     return res.status(201).json({ success: true, incident });
 });
-
 // 5. Admin Logs
 app.get('/api/admin/incidents', (req, res) => {
     const db = readDatabase();
     res.status(200).json({ total: db.incidents.length, incidents: db.incidents });
 });
-
 // Fallback to Single Page App
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`===============================================`);
     console.log(` Sahaay Safety Portal v2.0 Live`);

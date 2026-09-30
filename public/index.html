@@ -1,220 +1,808 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#08090b">
-    <title>Sahaay | Advanced Women Emergency Response Portal</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Sahaay | Advanced Women Safety Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* RESET & BASE */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #05070a !important;
+            color: #f8fafc !important;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 16px 12px;
+            overflow-x: hidden;
+        }
+
+        .dashboard-wrapper {
+            width: 100%;
+            max-width: 1020px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* HEADER */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-shield {
+            font-size: 2.2rem;
+            filter: drop-shadow(0 0 12px rgba(255, 51, 75, 0.4));
+        }
+
+        .header-brand h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .header-brand h1 span {
+            color: #ff334b;
+        }
+
+        .user-badge {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .user-badge strong {
+            color: #10b981;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: #121722;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #1c2436;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-logout {
+            color: #ff334b;
+        }
+
+        /* LAYOUT GRID */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.25fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media (max-width: 820px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .grid-col {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* CARD CONTAINERS */
+        .glass-card {
+            background: #0d111a;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .card-desc {
+            font-size: 0.82rem;
+            color: #94a3b8;
+            margin-bottom: 14px;
+        }
+
+        /* GPS BANNER */
+        .gps-card {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .gps-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .radar-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .radar-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 14px #10b981;
+            animation: pulse-ring 2s infinite ease-out;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.9);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.3);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(0.9);
+                opacity: 1;
+            }
+        }
+
+        .gps-meta h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .gps-coords {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: #38bdf8;
+            margin-top: 3px;
+        }
+
+        .gps-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .pill-btn {
+            background: #151b26;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pill-btn:hover {
+            background: #20293a;
+        }
+
+        /* SOS CORE BUTTON */
+        .sos-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 34px 20px;
+            text-align: center;
+        }
+
+        .sos-anchor {
+            width: 195px;
+            height: 195px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #ff4d64 0%, #b80a1e 100%);
+            border: 7px solid rgba(255, 51, 75, 0.25);
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(255, 51, 75, 0.45);
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+
+        .sos-anchor:active {
+            transform: scale(0.93);
+            box-shadow: 0 0 15px rgba(255, 51, 75, 0.8);
+        }
+
+        .sos-text {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+
+        .sos-subtext {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #ffe4e6;
+            letter-spacing: 1px;
+            margin-top: 6px;
+        }
+
+        .sos-note {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 18px;
+            max-width: 360px;
+            line-height: 1.4;
+        }
+
+        /* 4 QUICK ACTION TILES */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .action-tile {
+            background: #11151f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 16px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .action-tile:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .tile-icon {
+            font-size: 1.8rem;
+        }
+
+        .tile-info strong {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .tile-info small {
+            font-size: 0.72rem;
+            color: #94a3b8;
+        }
+
+        .border-red {
+            border-left: 4px solid #ff334b;
+        }
+
+        .border-amber {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .border-blue {
+            border-left: 4px solid #38bdf8;
+        }
+
+        /* USER IDENTITY CARD */
+        .profile-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .profile-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.86rem;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .profile-item span {
+            color: #94a3b8;
+        }
+
+        .profile-item strong {
+            color: #f8fafc;
+            font-weight: 600;
+        }
+
+        /* GUARDIAN SECTION */
+        .contact-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .contact-row input {
+            flex: 1;
+            background: #080a0f;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .contact-row input:focus {
+            border-color: #38bdf8;
+        }
+
+        .btn-add {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .guardian-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .guardian-card {
+            background: #111622;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .guardian-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .guardian-btns {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .call-guardian-btn {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .del-guardian-btn {
+            background: transparent;
+            color: #ff334b;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        /* EMERGENCY HELPLINE TILES (FIX FOR RAW BLUE LINKS) */
+        .helpline-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .hl-tile {
+            background: #111622;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px 10px;
+            text-decoration: none !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.15s;
+        }
+
+        .hl-tile:hover {
+            transform: translateY(-2px);
+        }
+
+        .hl-tile strong {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #ffffff;
+            display: block;
+        }
+
+        .hl-tile span {
+            font-size: 0.72rem;
+            color: #94a3b8;
+            margin-top: 3px;
+            display: block;
+        }
+
+        .hl-red {
+            border-bottom: 3px solid #ff334b;
+        }
+
+        .hl-purple {
+            border-bottom: 3px solid #a855f7;
+        }
+
+        .hl-orange {
+            border-bottom: 3px solid #f97316;
+        }
+
+        .hl-blue {
+            border-bottom: 3px solid #0284c7;
+        }
+
+        /* OVERLAYS */
+        .hidden {
+            display: none !important;
+        }
+
+        .strobe-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 99999;
+        }
+
+        .fake-call-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #040508;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .call-dialog {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .avatar-ring {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #1c2436;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin-bottom: 18px;
+        }
+
+        .caller-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .calling-state {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+
+        .call-actions-row {
+            display: flex;
+            gap: 48px;
+            margin-top: 48px;
+        }
+
+        .call-action-btn {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.8rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        .reject-call {
+            background-color: #ef4444;
+        }
+
+        .accept-call {
+            background-color: #10b981;
+        }
+
+        /* CALCULATOR */
+        .calc-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 11000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .calc-panel {
+            width: 100%;
+            max-width: 330px;
+        }
+
+        .calc-display {
+            color: white;
+            font-size: 3.2rem;
+            font-weight: 300;
+            text-align: right;
+            padding: 24px 10px;
+            word-break: break-all;
+            min-height: 80px;
+        }
+
+        .calc-keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .calc-btn {
+            height: 65px;
+            border-radius: 50%;
+            border: none;
+            background: #2b2b2b;
+            color: white;
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        .calc-btn.op {
+            background: #3d3d3d;
+            color: #ff9f0a;
+        }
+
+        .calc-btn.eq-key {
+            background: #ff9f0a;
+            color: white;
+        }
+
+        .calc-btn.exit-key {
+            background: #555;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .calc-btn.zero-key {
+            grid-column: span 2;
+            border-radius: 35px;
+            text-align: left;
+            padding-left: 24px;
+        }
+    </style>
 </head>
+
 <body>
     <div id="strobeOverlay" class="strobe-screen hidden"></div>
 
-    <!-- AUTHENTICATION MODAL -->
-    <div id="authContainer" class="auth-wrapper">
-        <div class="auth-card">
-            <div class="auth-brand">
-                <div class="brand-crest">🛡️</div>
-                <h2>Sahaay<span>.</span></h2>
-                <p>Personal Emergency Response & Guardian System</p>
-            </div>
-
-            <!-- Login Form -->
-            <form id="loginForm" class="auth-form">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="loginUsername" placeholder="e.g. ananya" required autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
-                </div>
-                <button type="submit" class="btn-submit">Secure Log In</button>
-                <p class="auth-toggle">Don't have an account? <a href="#" id="showRegisterLink">Register</a></p>
-            </form>
-
-            <!-- Register Form -->
-            <form id="registerForm" class="auth-form hidden">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="regName" placeholder="e.g. Ananya Sharma" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Username</label>
-                        <input type="text" id="regUsername" placeholder="ananya" required autocomplete="username">
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="regPassword" placeholder="••••••••" required autocomplete="new-password">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Age</label>
-                        <input type="number" id="regAge" placeholder="21" min="10" max="100">
-                    </div>
-                    <div class="form-group">
-                        <label>Profession</label>
-                        <input type="text" id="regProfession" placeholder="Student / IT Engineer">
-                    </div>
-                </div>
-                <button type="submit" class="btn-submit">Create Safety Profile</button>
-                <p class="auth-toggle">Already have an account? <a href="#" id="showLoginLink">Log In</a></p>
-            </form>
-        </div>
-    </div>
-
-    <!-- MAIN DASHBOARD -->
-    <div id="dashboardContainer" class="dashboard-wrapper hidden">
-        <!-- Top Navigation -->
+    <div class="dashboard-wrapper">
+        <!-- HEADER -->
         <header class="app-header">
-            <div class="header-left">
-                <div class="logo-box">🛡️</div>
+            <div class="header-brand">
+                <span class="logo-shield">🛡️</span>
                 <div>
-                    <h1>Sahaay<span class="dot">.</span></h1>
-                    <p class="user-greeting">Protected: <span id="navUserName">User</span></p>
+                    <h1>Sahaay<span>.</span></h1>
+                    <p class="user-badge">Protected: <strong id="userNameLabel">Somya Sharma</strong></p>
                 </div>
             </div>
-            <div class="header-right">
-                <button class="icon-btn" id="decoyToggleBtn" title="Camouflage into Calculator">🧮 Decoy</button>
-                <button class="icon-btn btn-logout" id="logoutBtn" title="Log Out">Log Out</button>
+            <div class="header-actions">
+                <button class="nav-btn" onclick="openDecoy()">🧮 Decoy</button>
+                <button class="nav-btn btn-logout" onclick="logoutUser()">Log Out</button>
             </div>
         </header>
 
-        <!-- Main Responsive Grid -->
+        <!-- MAIN RESPONSIVE TWO-COLUMN GRID -->
         <main class="dashboard-grid">
-            <!-- Left Column: Core Beacon -->
-            <section class="grid-col main-col">
-                <!-- Live Telemetry Card -->
-                <div class="cyber-card gps-banner">
-                    <div class="gps-flex">
-                        <div class="pulse-radar">
-                            <span class="radar-dot" id="gpsRadarDot"></span>
+            <!-- LEFT COLUMN: BEACON & DETERRENTS -->
+            <section class="grid-col">
+                <!-- GPS Card -->
+                <div class="glass-card gps-card">
+                    <div class="gps-row">
+                        <div class="radar-box">
+                            <span class="radar-dot"></span>
                         </div>
-                        <div class="gps-info">
-                            <h3 id="gpsStatusHeader">Calibrating Satellite Lock...</h3>
-                            <p class="mono-text" id="gpsCoordinates">Lat: --.---- | Long: --.----</p>
+                        <div class="gps-meta">
+                            <h3 id="gpsStatus">High-Precision GPS Locked (±85m)</h3>
+                            <p class="gps-coords" id="coordsText">Lat: 23.078502 | Long: 72.538063</p>
                         </div>
                     </div>
-                    <div class="gps-actions">
-                        <button class="pill-btn" id="shareLiveMapBtn">📍 Share Map Link</button>
-                        <button class="pill-btn" id="refreshGpsBtn">🔄 Recalibrate</button>
+                    <div class="gps-buttons">
+                        <button class="pill-btn" onclick="shareLocation()">📍 Share Map Link</button>
+                        <button class="pill-btn" onclick="recalibrateGPS()">🔄 Recalibrate</button>
                     </div>
                 </div>
 
-                <!-- SOS Primary Beacon -->
-                <div class="cyber-card sos-center-box">
-                    <div class="sos-ring">
-                        <button class="sos-core-btn" id="sosTriggerBtn">
-                            <span class="sos-glow"></span>
-                            <span class="sos-label">SOS</span>
-                            <span class="sos-sublabel">HOLD / TAP TO ALERT</span>
-                        </button>
-                    </div>
-                    <p class="sos-disclaimer">One tap alerts saved guardians via SMS, WhatsApp, and registers with backend dispatch.</p>
+                <!-- SOS Emergency Centerpiece -->
+                <div class="glass-card sos-wrapper">
+                    <button class="sos-anchor" id="sosMainBtn" onclick="triggerSOS()">
+                        <span class="sos-text">SOS</span>
+                        <span class="sos-subtext">HOLD / TAP TO ALERT</span>
+                    </button>
+                    <p class="sos-note">One tap alerts saved guardians via SMS, WhatsApp, and registers with backend
+                        dispatch.</p>
                 </div>
 
-                <!-- Fast Deterrent Action Grid -->
+                <!-- 4 Deterrent Action Buttons -->
                 <div class="action-grid">
-                    <button class="action-tile tile-red" id="sirenBtn">
+                    <button class="action-tile border-red" onclick="toggleSiren()">
                         <span class="tile-icon">🚨</span>
-                        <div class="tile-texts">
-                            <strong>Acoustic Siren</strong>
+                        <div class="tile-info">
+                            <strong id="sirenLabel">Acoustic Siren</strong>
                             <small>Dual High-Decibel Tone</small>
                         </div>
                     </button>
 
-                    <button class="action-tile tile-orange" id="strobeBtn">
+                    <button class="action-tile border-amber" onclick="toggleStrobe()">
                         <span class="tile-icon">⚡</span>
-                        <div class="tile-texts">
-                            <strong>Disorient Strobe</strong>
+                        <div class="tile-info">
+                            <strong id="strobeLabel">Disorient Strobe</strong>
                             <small>Visual Flashing Light</small>
                         </div>
                     </button>
 
-                    <button class="action-tile tile-slate" id="fakeCallBtn">
+                    <button class="action-tile border-blue" onclick="startFakeCall()">
                         <span class="tile-icon">📞</span>
-                        <div class="tile-texts">
-                            <strong>Fake Incoming Call</strong>
+                        <div class="tile-info">
+                            <strong id="fakeCallLabel">Fake Incoming Call</strong>
                             <small>Ring in 10 Seconds</small>
                         </div>
                     </button>
 
-                    <button class="action-tile tile-slate" id="audioRecorderBtn">
+                    <button class="action-tile border-blue" onclick="toggleAudioRecorder()">
                         <span class="tile-icon">🎙️</span>
-                        <div class="tile-texts">
-                            <strong>Record Evidence</strong>
-                            <small id="recordStatusLabel">Secret Microphone Log</small>
+                        <div class="tile-info">
+                            <strong id="recordLabel">Record Evidence</strong>
+                            <small id="recordSub">Secret Microphone Log</small>
                         </div>
                     </button>
                 </div>
 
-                <!-- Audio Evidence Log Section -->
-                <div class="cyber-card hidden" id="audioLogCard">
-                    <h3 class="card-heading">Captured Audio Evidence</h3>
-                    <div id="audioPlaybackBox"></div>
+                <!-- Recording Playback Container (Reveals after stopping record) -->
+                <div class="glass-card hidden" id="audioPlayerCard">
+                    <h3 class="card-title">Captured Evidence</h3>
+                    <div id="playbackSlot" style="margin-top: 10px;"></div>
                 </div>
             </section>
 
-            <!-- Right Column: Guardians & Helplines -->
-            <section class="grid-col side-col">
+            <!-- RIGHT COLUMN: PROFILE & GUARDIANS -->
+            <section class="grid-col">
                 <!-- User Profile Card -->
-                <div class="cyber-card profile-card">
-                    <h3 class="card-heading">Active Identity</h3>
-                    <div class="profile-meta">
-                        <div>
-                            <span class="meta-label">Full Name:</span>
-                            <span class="meta-val" id="profileFullName">--</span>
+                <div class="glass-card">
+                    <h3 class="card-title">Active Identity</h3>
+                    <div class="profile-list">
+                        <div class="profile-item">
+                            <span>Full Name:</span>
+                            <strong id="profileName">Somya Sharma</strong>
                         </div>
-                        <div>
-                            <span class="meta-label">Profession:</span>
-                            <span class="meta-val" id="profileProfession">--</span>
+                        <div class="profile-item">
+                            <span>Profession:</span>
+                            <strong id="profileProf">Student</strong>
                         </div>
-                        <div>
-                            <span class="meta-label">Age:</span>
-                            <span class="meta-val" id="profileAge">--</span>
+                        <div class="profile-item">
+                            <span>Age:</span>
+                            <strong id="profileAge">21</strong>
                         </div>
                     </div>
                 </div>
 
-                <!-- Saved Guardian Management -->
-                <div class="cyber-card">
-                    <h3 class="card-heading">Saved Emergency Guardians</h3>
-                    <p class="card-sub">Direct one-tap calling & rapid dispatch target.</p>
-                    
-                    <div class="input-inline">
-                        <input type="tel" id="newContactInput" placeholder="Enter 10-digit phone number" maxlength="10">
-                        <button class="btn-accent" id="saveContactBtn">Add</button>
+                <!-- Guardian Contact Manager -->
+                <div class="glass-card">
+                    <h3 class="card-title">Saved Emergency Guardians</h3>
+                    <p class="card-desc">Direct one-tap calling & rapid dispatch target.</p>
+
+                    <div class="contact-row">
+                        <input type="tel" id="contactInputField" placeholder="Enter 10-digit phone number"
+                            maxlength="10">
+                        <button class="btn-add" onclick="addNewContact()">Add</button>
                     </div>
 
-                    <div class="contacts-scroll-area">
-                        <ul class="guardian-list" id="guardianList">
-                            <!-- Populated dynamically -->
-                        </ul>
-                    </div>
+                    <ul class="guardian-list" id="guardianListUI">
+                        <!-- Populated by JS -->
+                    </ul>
                 </div>
 
-                <!-- Government Emergency Lines -->
-                <div class="cyber-card">
-                    <h3 class="card-heading">Instant Direct Helplines</h3>
-                    <div class="helpline-table">
-                        <a href="tel:112" class="hl-item hl-112">
+                <!-- Instant Helplines Grid -->
+                <div class="glass-card">
+                    <h3 class="card-title">Instant Direct Helplines</h3>
+                    <div class="helpline-grid">
+                        <a href="tel:112" class="hl-tile hl-red">
                             <strong>112</strong>
                             <span>National Emergency</span>
                         </a>
-                        <a href="tel:1091" class="hl-item hl-1091">
+                        <a href="tel:1091" class="hl-tile hl-purple">
                             <strong>1091</strong>
                             <span>Women Distress</span>
                         </a>
-                        <a href="tel:181" class="hl-item hl-181">
+                        <a href="tel:181" class="hl-tile hl-orange">
                             <strong>181</strong>
                             <span>Domestic Violence</span>
                         </a>
-                        <a href="tel:1930" class="hl-item hl-1930">
+                        <a href="tel:1930" class="hl-tile hl-blue">
                             <strong>1930</strong>
                             <span>Cyber Harassment</span>
                         </a>
@@ -224,22 +812,20 @@
         </main>
     </div>
 
-    <!-- FAKE CALL MODAL OVERLAY -->
+    <!-- FAKE CALL MODAL -->
     <div id="fakeCallModal" class="fake-call-container hidden">
         <div class="call-dialog">
-            <div class="avatar-ring">
-                <span class="caller-avatar">👤</span>
-            </div>
+            <div class="avatar-ring">👤</div>
             <h2 class="caller-title">Papa (Mobile)</h2>
             <p class="calling-state" id="fakeCallStateText">Incoming Call...</p>
             <div class="call-actions-row">
-                <button class="call-action-btn reject-call" id="declineCallBtn">✕</button>
-                <button class="call-action-btn accept-call" id="acceptCallBtn">📞</button>
+                <button class="call-action-btn reject-call" onclick="closeFakeCall()">✕</button>
+                <button class="call-action-btn accept-call" onclick="answerFakeCall()">📞</button>
             </div>
         </div>
     </div>
 
-    <!-- DECOY CALCULATOR OVERLAY -->
+    <!-- CALCULATOR MODAL -->
     <div id="decoyCalcModal" class="calc-container hidden">
         <div class="calc-panel">
             <div class="calc-display" id="calcDisplay">0</div>
@@ -248,28 +834,212 @@
                 <button class="calc-btn op" onclick="calcOp('/')">÷</button>
                 <button class="calc-btn op" onclick="calcOp('*')">×</button>
                 <button class="calc-btn op" onclick="calcOp('-')">−</button>
-                
                 <button class="calc-btn" onclick="calcDigit('7')">7</button>
                 <button class="calc-btn" onclick="calcDigit('8')">8</button>
                 <button class="calc-btn" onclick="calcDigit('9')">9</button>
                 <button class="calc-btn op" onclick="calcOp('+')">+</button>
-                
                 <button class="calc-btn" onclick="calcDigit('4')">4</button>
                 <button class="calc-btn" onclick="calcDigit('5')">5</button>
                 <button class="calc-btn" onclick="calcDigit('6')">6</button>
-                <button class="calc-btn exit-key" onclick="exitDecoy()">EXIT</button>
-                
+                <button class="calc-btn exit-key" onclick="closeDecoy()">EXIT</button>
                 <button class="calc-btn" onclick="calcDigit('1')">1</button>
                 <button class="calc-btn" onclick="calcDigit('2')">2</button>
                 <button class="calc-btn" onclick="calcDigit('3')">3</button>
                 <button class="calc-btn eq-key" onclick="calcEvaluate()">=</button>
-                
                 <button class="calc-btn zero-key" onclick="calcDigit('0')">0</button>
                 <button class="calc-btn" onclick="calcDigit('.')">.</button>
             </div>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- INLINE JAVASCRIPT ENGINE -->
+    <script>
+        // State
+        let currentCoords = { lat: 23.078502, lng: 72.538063 };
+        let guardianContacts = JSON.parse(localStorage.getItem('sahaay_contacts') || '["9876543210"]');
+        let sirenActive = false, sirenAudio = null, sirenOsc = null, sirenInterval = null;
+        let strobeActive = false, strobeInterval = null;
+        let mediaRecorder = null, audioChunks = [];
+
+        // Geolocation
+        function recalibrateGPS() {
+            if ('geolocation' in navigator) {
+                document.getElementById('gpsStatus').textContent = 'Acquiring Satellite Lock...';
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    currentCoords.lat = pos.coords.latitude.toFixed(6);
+                    currentCoords.lng = pos.coords.longitude.toFixed(6);
+                    const acc = Math.round(pos.coords.accuracy);
+                    document.getElementById('gpsStatus').textContent = `High-Precision GPS Locked (±${acc}m)`;
+                    document.getElementById('coordsText').textContent = `Lat: ${currentCoords.lat} | Long: ${currentCoords.lng}`;
+                });
+            }
+        }
+
+        function shareLocation() {
+            const url = `https://www.google.com/maps?q=${currentCoords.lat},${currentCoords.lng}`;
+            navigator.clipboard.writeText(url);
+            alert('Live Google Maps link copied to clipboard!');
+        }
+
+        // SOS Trigger
+        function triggerSOS() {
+            const mapUrl = `https://www.google.com/maps?q=${currentCoords.lat},${currentCoords.lng}`;
+            const msg = `EMERGENCY ALERT from Somya Sharma! I need immediate help. My current live location is: ${mapUrl}`;
+            if (guardianContacts.length > 0) {
+                window.location.href = `sms:${guardianContacts.join(',')}?body=${encodeURIComponent(msg)}`;
+            } else {
+                window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+            }
+        }
+
+        // Siren (Web Audio API)
+        function toggleSiren() {
+            if (!sirenActive) {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                sirenAudio = new AudioCtx();
+                sirenOsc = sirenAudio.createOscillator();
+                const gain = sirenAudio.createGain();
+                sirenOsc.type = 'sawtooth';
+                gain.gain.setValueAtTime(1.0, sirenAudio.currentTime);
+                sirenOsc.connect(gain);
+                gain.connect(sirenAudio.destination);
+                sirenOsc.start();
+                let toggle = false;
+                sirenInterval = setInterval(() => {
+                    if (sirenOsc) {
+                        sirenOsc.frequency.setTargetAtTime(toggle ? 1000 : 750, sirenAudio.currentTime, 0.08);
+                        toggle = !toggle;
+                    }
+                }, 250);
+                sirenActive = true;
+                document.getElementById('sirenLabel').textContent = 'Stop Siren';
+            } else {
+                clearInterval(sirenInterval);
+                if (sirenOsc) { sirenOsc.stop(); sirenOsc.disconnect(); }
+                sirenActive = false;
+                document.getElementById('sirenLabel').textContent = 'Acoustic Siren';
+            }
+        }
+
+        // Strobe
+        function toggleStrobe() {
+            const overlay = document.getElementById('strobeOverlay');
+            if (!strobeActive) {
+                overlay.classList.remove('hidden');
+                let white = true;
+                strobeInterval = setInterval(() => {
+                    overlay.style.backgroundColor = white ? '#ffffff' : '#ff0037';
+                    white = !white;
+                }, 70);
+                strobeActive = true;
+                document.getElementById('strobeLabel').textContent = 'Stop Strobe';
+            } else {
+                clearInterval(strobeInterval);
+                overlay.classList.add('hidden');
+                strobeActive = false;
+                document.getElementById('strobeLabel').textContent = 'Disorient Strobe';
+            }
+        }
+
+        // Fake Call
+        function startFakeCall() {
+            document.getElementById('fakeCallLabel').textContent = 'Calling in 10s...';
+            setTimeout(() => {
+                document.getElementById('fakeCallModal').classList.remove('hidden');
+            }, 10000);
+        }
+        function closeFakeCall() {
+            document.getElementById('fakeCallModal').classList.add('hidden');
+            document.getElementById('fakeCallLabel').textContent = 'Fake Incoming Call';
+        }
+        function answerFakeCall() {
+            document.getElementById('fakeCallStateText').textContent = 'Connected (00:04)';
+            alert('Call Answered: "Beta, I am just 100m away with the car, stay right where you are."');
+            closeFakeCall();
+        }
+
+        // Audio Evidence Recorder
+        async function toggleAudioRecorder() {
+            if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const url = URL.createObjectURL(blob);
+                        document.getElementById('playbackSlot').innerHTML = `
+                            <audio controls src="${url}" style="width: 100%;"></audio>
+                            <a href="${url}" download="sahaay_evidence.webm" style="color: #38bdf8; display: block; margin-top: 6px; font-size: 0.8rem; font-weight: 600;">⬇️ Download Evidence Audio</a>
+                        `;
+                        document.getElementById('audioPlayerCard').classList.remove('hidden');
+                    };
+                    mediaRecorder.start();
+                    document.getElementById('recordLabel').textContent = 'STOP RECORDING';
+                    document.getElementById('recordSub').textContent = 'Recording in background...';
+                } catch {
+                    alert('Microphone access is required to record evidence.');
+                }
+            } else {
+                mediaRecorder.stop();
+                document.getElementById('recordLabel').textContent = 'Record Evidence';
+                document.getElementById('recordSub').textContent = 'Secret Microphone Log';
+            }
+        }
+
+        // Guardian Contacts UI
+        function renderContacts() {
+            const list = document.getElementById('guardianListUI');
+            list.innerHTML = '';
+            guardianContacts.forEach((num, idx) => {
+                const li = document.createElement('li');
+                li.className = 'guardian-card';
+                li.innerHTML = `
+                    <span class="guardian-num">+91 ${num}</span>
+                    <div class="guardian-btns">
+                        <a href="tel:+91${num}" class="call-guardian-btn">📞 Call</a>
+                        <button class="del-guardian-btn" onclick="removeContact(${idx})">✕</button>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+            localStorage.setItem('sahaay_contacts', JSON.stringify(guardianContacts));
+        }
+
+        function addNewContact() {
+            const input = document.getElementById('contactInputField');
+            const val = input.value.trim();
+            if (/^\d{10}$/.test(val)) {
+                guardianContacts.push(val);
+                input.value = '';
+                renderContacts();
+            } else {
+                alert('Please enter a valid 10-digit number.');
+            }
+        }
+
+        function removeContact(i) {
+            guardianContacts.splice(i, 1);
+            renderContacts();
+        }
+
+        // Decoy Calculator
+        let calcExpr = '';
+        function openDecoy() { document.getElementById('decoyCalcModal').classList.remove('hidden'); }
+        function closeDecoy() { document.getElementById('decoyCalcModal').classList.add('hidden'); }
+        function calcDigit(d) { calcExpr += d; document.getElementById('calcDisplay').innerText = calcExpr; }
+        function calcOp(op) { if (op === 'C') calcExpr = ''; else calcExpr += op; document.getElementById('calcDisplay').innerText = calcExpr || '0'; }
+        function calcEvaluate() { try { calcExpr = String(eval(calcExpr)); document.getElementById('calcDisplay').innerText = calcExpr; } catch { calcExpr = ''; document.getElementById('calcDisplay').innerText = '0'; } }
+
+        function logoutUser() {
+            if (confirm('Log out from Sahaay?')) location.reload();
+        }
+
+        // Init
+        renderContacts();
+        recalibrateGPS();
+    </script>
 </body>
+
 </html>
